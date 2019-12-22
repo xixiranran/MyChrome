@@ -1,4 +1,4 @@
-﻿latest=4.0.1
+﻿latest=3.8.1
 url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v4.0.1.7z
 url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v4.0.1_x64.7z
 update=1. 修正近期 Stable/Beta/Dev 无法更新的问题。\n2. 去掉查找Google IP功能，要从google更新浏览器请自备FQ工具，或者选择从sina更新。
