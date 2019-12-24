@@ -1,6 +1,6 @@
-﻿latest=3.8.1
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v4.0.1.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v4.0.1_x64.7z
-update=1. 修正近期 Stable/Beta/Dev 无法更新的问题。\n2. 去掉查找Google IP功能，要从google更新浏览器请自备FQ工具，或者选择从sina更新。
-update_zh-TW=修正近期 Stable/Beta/Dev 无法更新的問題。
-update_en-US=Fixed update problems of Stable/Beta/Dev channel.
+latest=3.8.3
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.3.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.3_x64.7z
+update=修复64位GreenChrome，Chrome++，Edge++不能正确注入的问题。
+update_zh-TW=修復64位GreenChrome，Chrome++，Edge++不能正確注入的問題。
+update_en-US=Fixed the problem that 64-bit GreenChrome, Chrome ++, Edge ++ could not be injected correctly.
