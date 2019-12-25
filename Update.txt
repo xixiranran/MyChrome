@@ -1,6 +1,6 @@
-latest=3.8.3
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.3.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.3_x64.7z
-update=修复64位GreenChrome，Chrome++，Edge++不能正确注入的问题。
-update_zh-TW=修復64位GreenChrome，Chrome++，Edge++不能正確注入的問題。
-update_en-US=Fixed the problem that 64-bit GreenChrome, Chrome ++, Edge ++ could not be injected correctly.
+latest=3.8.4
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.4.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.4_x64.7z
+update=1.让随浏览器启动的软件先于浏览器启动\n2.细节修改
+update_zh-TW=1.讓隨瀏覽器啟動的軟件先於瀏覽器啟動\n2.細節修改
+update_en-US=1. Make the software launched with the browser launch before the browser \n2. Modify the details
