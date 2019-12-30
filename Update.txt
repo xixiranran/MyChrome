@@ -1,6 +1,6 @@
 latest=3.8.5
 url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.5.7z
 url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.5_x64.7z
-update=更新MouseInc到2.9.8版本
-update_zh-TW=更新MouseInc到2.9.8版本
-update_en-US=Update MouseInc to version 2.9.8
+update=1.更新MouseInc到2.9.8版本\n2.修改MyChrome更新频率
+update_zh-TW=1.更新MouseInc到2.9.8版本\n2.修改MyChrome更新頻率
+update_en-US=1.Update MouseInc to version 2.9.8\n2.Modify MyChrome update frequency
