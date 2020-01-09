@@ -1,4 +1,4 @@
-latest=3.8.7
+latest=3.8.71
 url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.7.7z
 url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.7_x64.7z
 update=增加Mac版本的Chrome下载地址获取和Edge、Firefox的下载地址获取
