@@ -1,6 +1,6 @@
-latest=3.8.8
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.8.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.8_x64.7z
-update=增加自动注入功能
-update_zh-TW=增加自動注入功能
-update_en-US=Add auto injection function
+latest=3.8.9
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.9.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.9_x64.7z
+update=修改MyChrome更新频率
+update_zh-TW=修改MyChrome更新頻率
+update_en-US=Modify MyChrome update frequency
