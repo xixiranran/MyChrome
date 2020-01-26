@@ -1,6 +1,6 @@
-latest=3.8.11
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.11.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.11_x64.7z
-update=bug修复
-update_zh-TW=bug修復
-update_en-US=bug fixed
+latest=3.8.12
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.12.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.12_x64.7z
+update=增加启用/禁用第三方扩展程序功能
+update_zh-TW=增加啟用/禁用第三方擴展程序功能
+update_en-US=Added the function of enabling / disabling third-party extensions
