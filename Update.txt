@@ -1,6 +1,6 @@
-latest=3.8.15
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.15.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.15_x64.7z
-update=1.bug修复
-update_zh-TW=1.bug修復
-update_en-US=1.bug fixed
+latest=3.8.16
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.16.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.16_x64.7z
+update=1.软件界面修改
+update_zh-TW=1.軟件界面修改
+update_en-US=1.Software interface modification
