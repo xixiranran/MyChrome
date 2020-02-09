@@ -1,6 +1,6 @@
-latest=3.8.18
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.18.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.18_x64.7z
-update=1.去掉GreenChrome，减小软件体积；\n2.细节修改
-update_zh-TW=1.去掉GreenChrome，减小軟件體積；\n2.細節修改
-update_en-US=1. Remove GreenChrome and reduce software volume; \n2. Modify details
+latest=3.8.19
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.19.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.19_x64.7z
+update=1.细节修改
+update_zh-TW=1.細節修改
+update_en-US=1. Modify details
