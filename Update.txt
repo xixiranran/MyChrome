@@ -1,6 +1,6 @@
-latest=3.8.19
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.19.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.19_x64.7z
-update=1.细节修改
-update_zh-TW=1.細節修改
-update_en-US=1. Modify details
+latest=3.8.20
+url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.20.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.20_x64.7z
+update=1.增加MyChrome浏览器更新下载进度条;\n2.更新MouseInc到2.9.11;\n3.修复TabPlus双击关闭标签页和滚轮切换标签页对新版本chrome的支持；
+update_zh-TW=1.增加MyChrome瀏覽器更新下載進度條;\n2.更新MouseInc到2.9.11;\n3.修復TabPlus雙擊關閉標籤頁和滾輪切換標籤頁對新版本chrome的支持；
+update_en-US=1. Add MyChrome browser update download progress bar; \n2. Update MouseInc to 2.9.11; \n3. Fix TabPlus double-click to close the tab and scroll the tab to support the new version of chrome;
