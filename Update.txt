@@ -1,6 +1,6 @@
-latest=3.8.22
-url=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.22.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChromeUpdate/master/MyChrome_v3.8.22_x64.7z
-update=1.MouseInc更新到2.10.3
-update_zh-TW=1.MouseInc更新到2.10.3
-update_en-US=1. MouseInc updated to 2.10.3
+latest=3.8.23
+url=https://gitee.com/shenjie4774/MyChrome/raw/master/MyChrome_v3.8.23.7z
+url_x64=https://gitee.com/shenjie4774/MyChrome/raw/master/MyChrome_v3.8.23_x64.7z
+update=1.更新地址改成码云；\n2.配置修改。
+update_zh-TW=1.更新地址改成碼雲；\n2.配置修改。
+update_en-US=1. Update the address to Code Cloud; \n2. Modify the configuration.
