@@ -1,6 +1,6 @@
-latest=3.8.23
-url=https://gitee.com/shenjie4774/MyChrome/raw/master/MyChrome_v3.8.23.7z
-url_x64=https://gitee.com/shenjie4774/MyChrome/raw/master/MyChrome_v3.8.23_x64.7z
-update=1.更新地址改成码云；\n2.配置修改。
-update_zh-TW=1.更新地址改成碼雲；\n2.配置修改。
-update_en-US=1. Update the address to Code Cloud; \n2. Modify the configuration.
+latest=3.8.24
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.24.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.24_x64.7z
+update=1.配置修改。
+update_zh-TW=1.配置修改。
+update_en-US=1.Modify the configuration.
