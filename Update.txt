@@ -1,6 +1,6 @@
-latest=3.8.26
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.26.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.26_x64.7z
-update=1.MouseInc更新到2.10.6版本。
-update_zh-TW=1.MouseInc更新到2.10.6版本。
-update_en-US=1.MouseInc updated to version 2.10.6.
+latest=3.8.27
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.27.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.27_x64.7z
+update=1.MouseInc更新到2.10.8版本。
+update_zh-TW=1.MouseInc更新到2.10.8版本。
+update_en-US=1.MouseInc updated to version 2.10.8.
