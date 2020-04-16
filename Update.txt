@@ -1,6 +1,6 @@
 latest=3.8.32
 url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.32.7z
 url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.32_x64.7z
-update=1.解决360等杀毒软件报毒的问题。
-update_zh-TW=1.解決360等殺毒軟件報毒的問題。
-update_en-US=1.Solve the problem of antivirus reporting by 360 antivirus software.
+update=1.细节修改。
+update_zh-TW=1.細節修改。
+update_en-US=1.Details modification.
