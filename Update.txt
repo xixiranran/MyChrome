@@ -1,6 +1,6 @@
-latest=3.8.32
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.32.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.32_x64.7z
-update=1.细节修改。
-update_zh-TW=1.細節修改。
-update_en-US=1.Details modification.
+latest=3.8.33
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.33.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.33_x64.7z
+update=1.修复Edge更新解压失败的问题。
+update_zh-TW=1.修復Edge更新解壓失敗的問題。
+update_en-US=1.Fix the problem of Edge update decompression failure.
