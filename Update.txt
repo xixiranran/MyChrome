@@ -1,6 +1,6 @@
-latest=3.8.34
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.34.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.34_x64.7z
-update=1.修复Edge更新解压失败的问题。
-update_zh-TW=1.修復Edge更新解壓失敗的問題。
-update_en-US=1.Fix the problem of Edge update decompression failure.
+latest=3.8.35
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.35.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.35_x64.7z
+update=修复Edge版本号不显示的问题
+update_zh-TW=修復Edge版本號不顯示的問題
+update_en-US=Fix the issue that the Edge version number is not displayed
