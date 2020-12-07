@@ -1,6 +1,6 @@
-latest=3.8.35
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.35.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.35_x64.7z
-update=修复Edge版本号不显示的问题
-update_zh-TW=修復Edge版本號不顯示的問題
-update_en-US=Fix the issue that the Edge version number is not displayed
+latest=3.8.36
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.36.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.36_x64.7z
+update=1.修复右键关闭标签页失败问题\n2.去掉GreenChrome;
+update_zh-TW=1.修復右鍵關閉標籤頁失敗問題\n2.去掉GreenChrome;
+update_en-US=1. Fix the problem of failure to close tabs by right-clicking\n2. Remove GreenChrome;
