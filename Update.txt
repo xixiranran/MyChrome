@@ -1,6 +1,6 @@
-latest=3.8.36
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.36.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.36_x64.7z
-update=1.修复右键关闭标签页失败问题\n2.去掉GreenChrome;
-update_zh-TW=1.修復右鍵關閉標籤頁失敗問題\n2.去掉GreenChrome;
-update_en-US=1. Fix the problem of failure to close tabs by right-clicking\n2. Remove GreenChrome;
+latest=3.8.37
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.37.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.37_x64.7z
+update=1.细节调整\n2.恢复GreenChrome;
+update_zh-TW=1.細節調整\n2.恢復GreenChrome；
+update_en-US=1. Detail adjustment. \n2. Restore GreenChrome;
