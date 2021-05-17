@@ -1,6 +1,6 @@
-latest=3.8.37
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.37.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.37_x64.7z
-update=1.细节调整\n2.恢复GreenChrome;
-update_zh-TW=1.細節調整\n2.恢復GreenChrome；
-update_en-US=1. Detail adjustment. \n2. Restore GreenChrome;
+latest=3.8.38
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.38.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.38_x64.7z
+update=1.更新TabPlus
+update_zh-TW=1.更新TabPlus
+update_en-US=1. Update TabPlus
