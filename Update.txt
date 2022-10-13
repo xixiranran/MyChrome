@@ -1,6 +1,0 @@
-latest=3.8.38
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.38.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.38_x64.7z
-update=1.更新TabPlus
-update_zh-TW=1.更新TabPlus
-update_en-US=1. Update TabPlus
