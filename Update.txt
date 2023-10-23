@@ -1,6 +1,0 @@
-latest=3.8.40
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.40.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.40_x64.7z
-update=1.修复win-chrome-canary无法解析下载地址的问题。
-update_zh-TW=1.修復win-chrome-canary無法解析下載地址的問題。
-update_en-US=1.Fix the problem that win-chrome-canary could not resolve the download address.
