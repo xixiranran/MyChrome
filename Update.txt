@@ -1,6 +1,6 @@
-﻿latest=3.8.42
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.42.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.42_x64.7z
-update=1.新增chrome++及mouseinc；\n2.修复Edge离线安装包解压失败及注入dll失败问题;\n3.修复chrome崩溃问题；\n4.修复更新浏览器后卡顿问题；\n5.细节调整。
-update_zh-TW=1. 新增chrome++及mouseinc;\n2.修复Edge离线安装包解压失败及注入dll失败问题;\n3.修复chrome崩溃问题； \n4.修復更新瀏覽器後卡頓問題； \n5.細節調整。
-update_en-US=1. Add Chrome++and Mouseinc; \n2. Fix issues with Edge offline installation package decompression failure and DLL injection failure; \n3. Fix chrome crash issue;\n4. Fix the issue of browser stuck after updating; \n5. Adjust the details.
+﻿latest=3.8.43
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.43.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.43_x64.7z
+update=1.细节调整。
+update_zh-TW=1.細節調整。
+update_en-US=1.Adjust the details.
