@@ -1,0 +1,6 @@
+﻿﻿latest=3.8.45
+url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.45.7z
+url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.45_x64.7z
+update=1..更新chrome++到1.7.3;\n2.细节调整
+update_zh-TW=1.更新chrome++到1.7.3； \n2.細節調整
+update_en-US=1. Update Chrome++ to 1.7.3; \n2. Detail adjustment
