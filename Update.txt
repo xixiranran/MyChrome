@@ -1,6 +1,0 @@
-﻿latest=3.8.44
-url=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.44.7z
-url_x64=https://raw.githubusercontent.com/Jason4774/MyChrome/master/MyChrome_v3.8.44_x64.7z
-update=1.修复Edge及chromium更新失败的问题;\n2.更新chrome++到1.6.1;\n3.修复chrome++和mouseinc同时使用时右键关闭标签页失效的问题;\n4.细节调整
-update_zh-TW=1.修復Edge及chromium更新失敗的問題； \n2.更新chrome++到1.6.1； \n3.修復chrome++和mouseinc同時使用時右鍵關閉標籤頁失效的問題； \n4.細節調整
-update_en-US=1. Fix the issue of failed updates to Edge and Chromium; \n2. Update Chrome++ to 1.6.1; \n3. Fix the issue of invalid right-click closing tabs when using Chrome++and Mouseinc simultaneously; \n4. Detail adjustment
