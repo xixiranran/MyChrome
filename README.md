@@ -1,10 +1,10 @@
 # MyChrome
 
-https://app.xixiranran.com/MyChrome/
+Mychrome更新地址：https://app.xixiranran.com/MyChrome/
 
-https://tools.xixiranran.com/chrome/
+Chrome在线下载地址：https://tools.xixiranran.com/chrome/
 
-https://tools.xixiranran.com/edge/
+Edge在线下载地址：https://tools.xixiranran.com/edge/
 
 2024年4月28日3.8.46
 
