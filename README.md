@@ -1,4 +1,17 @@
 # MyChrome
+
+https://app.xixiranran.com/MyChrome/
+
+https://tools.xixiranran.com/chrome/
+
+https://tools.xixiranran.com/edge/
+
+2024年4月28日3.8.46
+
+1.修复Edge beta dev更新失败问题
+
+2.细节调整
+
 2024年2月20日3.8.45
 
 1.更新chrome++到1.7.3版本
