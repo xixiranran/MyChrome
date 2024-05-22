@@ -1,6 +1,6 @@
-﻿latest=3.8.46
-url=https://app.xixiranran.com/MyChrome/MyChrome_v3.8.46.7z
-url_x64=https://app.xixiranran.com/MyChrome/MyChrome_v3.8.46_x64.7z
-update=1.修复Edge beta dev的64位更新错误bug\n2.细节调整
-update_zh-TW=1.修復Edge beta dev的64位元更新錯誤bug； \n2.細節調整
-update_en-US=1. Fix the 64-bit update error bug of Edge beta dev; \n2. Detail adjustment
+﻿latest=3.8.48
+url=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.48.7z
+url_x64=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.48_x64.7z
+update=1.新增支持Brave、Firefox、Vivaldi、Cent等浏览器的查询下载和解压，更名为MyBrowser\n2.支持创建对应浏览器的快捷方式\n3.细节调整
+update_zh-TW=1.新增支援Brave、Firefox、Vivaldi、Cent等瀏覽器的查詢下載和解壓，更名為MyBrowser\n2.支援建立對應瀏覽器的捷徑\n3.細節調整
+update_en-US=1. Added support for query download and decompression of Brave, Firefox, Vivaldi, Cent and other browsers, and renamed it to MyBrowser\n2. Support the creation of shortcuts for corresponding browsers\n3. Detailed adjustments
