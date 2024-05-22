@@ -1,10 +1,26 @@
 # MyChrome
 
-Mychrome更新地址：https://app.xixiranran.com/MyChrome/
+Mychrome更新地址：https://mybrowser.xixiranran.com/
 
 Chrome在线下载地址：https://tools.xixiranran.com/chrome/
 
 Edge在线下载地址：https://tools.xixiranran.com/edge/
+
+Brave在线下载地址：https://tools.xixiranran.com/brave/
+
+Vivaldi在线下载地址：https://tools.xixiranran.com/vivaldi/
+
+Firefox在线下载地址：https://tools.xixiranran.com/firefox/
+
+Cent在线下载地址：https://tools.xixiranran.com/cent/
+
+2024年5月22日3.8.48
+
+1.新增支持Brave、Firefox、Vivaldi、Cent等浏览器的查询下载和解压，更名为MyBrowser
+
+2.支持创建对应浏览器的快捷方式
+
+3.细节调整
 
 2024年4月28日3.8.46
 
