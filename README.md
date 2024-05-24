@@ -1,6 +1,7 @@
-# MyChrome
+# MyBrowser
+MyChrome3.8.48正式更名为MyBrowser
 
-Mychrome更新地址：https://mybrowser.xixiranran.com/
+MyBrowser更新地址：https://mybrowser.xixiranran.com/
 
 Chrome在线下载地址：https://tools.xixiranran.com/chrome/
 
