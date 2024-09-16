@@ -1,6 +1,6 @@
-﻿latest=3.8.48
-url=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.48.7z
-url_x64=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.48_x64.7z
-update=1.新增支持Brave、Firefox、Vivaldi、Cent等浏览器的查询下载和解压，更名为MyBrowser\n2.支持创建对应浏览器的快捷方式\n3.细节调整
-update_zh-TW=1.新增支援Brave、Firefox、Vivaldi、Cent等瀏覽器的查詢下載和解壓，更名為MyBrowser\n2.支援建立對應瀏覽器的捷徑\n3.細節調整
-update_en-US=1. Added support for query download and decompression of Brave, Firefox, Vivaldi, Cent and other browsers, and renamed it to MyBrowser\n2. Support the creation of shortcuts for corresponding browsers\n3. Detailed adjustments
+﻿latest=3.8.49
+url=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.49.7z
+url_x64=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.49_x64.7z
+update=1.修改64位金丝雀版Edge浏览器下载链接获取方式，更加稳定\n2.细节调整
+update_zh-TW=1.修改64位金絲雀版Edge瀏覽器下載連結取得方式，更加穩定\n2.細節調整
+update_en-US=1. Modify the download link acquisition method of the 64-bit Canary version of Edge browser to make it more stable\n2. Detailed adjustments
