@@ -1,4 +1,6 @@
 # MyBrowser
+请访问[https://github.com/xixiranran/MyChrome/releases](https://github.com/xixiranran/MyChrome/releases)获取MyBrowser最新版下载链接
+
 MyChrome3.8.48正式更名为MyBrowser
 
 MyBrowser更新地址：https://mybrowser.xixiranran.com/
