@@ -3,19 +3,19 @@
 
 MyChrome3.8.48正式更名为MyBrowser
 
-MyBrowser更新地址：https://mybrowser.xixiranran.com/
+MyBrowser更新地址：[https://mybrowser.xixiranran.com/](https://mybrowser.xixiranran.com/)
 
-Chrome在线下载地址：https://tools.xixiranran.com/chrome/
+Chrome在线下载地址：[https://tools.xixiranran.com/chrome/](https://tools.xixiranran.com/chrome/)
 
-Edge在线下载地址：https://tools.xixiranran.com/edge/
+Edge在线下载地址：[https://tools.xixiranran.com/edge/](https://tools.xixiranran.com/edge/)
 
-Brave在线下载地址：https://tools.xixiranran.com/brave/
+Brave在线下载地址：[https://tools.xixiranran.com/brave/](https://tools.xixiranran.com/brave/)
 
-Vivaldi在线下载地址：https://tools.xixiranran.com/vivaldi/
+Vivaldi在线下载地址：[https://tools.xixiranran.com/vivaldi/](https://tools.xixiranran.com/vivaldi/)
 
-Firefox在线下载地址：https://tools.xixiranran.com/firefox/
+Firefox在线下载地址：[https://tools.xixiranran.com/firefox/](https://tools.xixiranran.com/firefox/)
 
-Cent在线下载地址：https://tools.xixiranran.com/cent/
+Cent在线下载地址：[https://tools.xixiranran.com/cent/](https://tools.xixiranran.com/cent/)
 
 2024年9月17日3.8.49
 
