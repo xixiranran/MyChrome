@@ -15,6 +15,12 @@ Firefox在线下载地址：https://tools.xixiranran.com/firefox/
 
 Cent在线下载地址：https://tools.xixiranran.com/cent/
 
+2024年9月17日3.8.49
+
+1.修改64位金丝雀版Edge浏览器下载链接获取方式，更加稳定
+
+2.细节调整
+
 2024年5月22日3.8.48
 
 1.新增支持Brave、Firefox、Vivaldi、Cent等浏览器的查询下载和解压，更名为MyBrowser
