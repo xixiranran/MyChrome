@@ -1,6 +1,6 @@
-﻿latest=3.8.49
-url=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.49.7z
-url_x64=https://mybrowser.xixiranran.com/latest/MyBrowser_v3.8.49_x64.7z
-update=1.修改64位金丝雀版Edge浏览器下载链接获取方式，更加稳定\n2.细节调整
-update_zh-TW=1.修改64位金絲雀版Edge瀏覽器下載連結取得方式，更加穩定\n2.細節調整
-update_en-US=1. Modify the download link acquisition method of the 64-bit Canary version of Edge browser to make it more stable\n2. Detailed adjustments
+﻿latest=3.8.50
+url=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50.7z
+url_x64=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50_x64.7z
+update=1.修复chrome下载解压失败的问题；\n2.多处bug修复
+update_zh-TW=1.修復chrome下載解壓縮失敗的問題；\n2.多處bug修復
+update_en-US=1. Fixed an issue where Chrome download and decompression failed;\n2. Fixed multiple bugs
