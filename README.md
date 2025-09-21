@@ -17,6 +17,12 @@ Firefox在线下载地址：[https://xixiranran.github.io/tools/firefox/](https:
 
 Cent在线下载地址：[https://xixiranran.github.io/tools/cent/](https://xixiranran.github.io/tools/cent/)
 
+2025年9月21日3.8.50
+
+1.修复chrome下载解压失败的问题；
+
+2.多处bug修复
+
 2024年9月17日3.8.49
 
 1.修改64位金丝雀版Edge浏览器下载链接获取方式，更加稳定
