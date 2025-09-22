@@ -1,0 +1,6 @@
+﻿latest=3.8.50
+url=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50.7z
+url_x64=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50_x64.7z
+update=1.修复chrome下载解压失败的问题；\n2.多处bug修复
+update_zh-TW=1.修復chrome下載解壓縮失敗的問題；\n2.多處bug修復
+update_en-US=1. Fixed an issue where Chrome download and decompression failed;\n2. Fixed multiple bugs
