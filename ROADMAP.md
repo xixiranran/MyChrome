@@ -36,6 +36,7 @@ How to read the columns:
 | H4 — CI fails on Au3Check warnings | 3.9.4 |
 | K1 — GPL-3.0 `LICENSE` and `NOTICE` | 3.9.1 |
 | K2 — `licenses/` with third-party terms | 3.9.3 |
+| G2 — Vivaldi now downloads from its real appcast (partial: x64/x86) | 3.9.5 |
 
 Plus two findings that were not on the original list:
 
@@ -126,7 +127,7 @@ Plus two findings that were not on the original list:
 | # | Item | Why | P | Eff | Risk |
 | --- | --- | --- | --- | --- | --- |
 | G1 | Real source for Edge | **Code finding:** the Edge path uses `MSXML2.XMLHTTP`, which ignores the app's own proxy setting. It is also the one path not verified here (TLS failure from the build sandbox) | P0 | M | Medium |
-| G2 | Real source for Vivaldi | Today it opens a link hub, not a download. Vivaldi publishes `download.vivaldi.com/stable/Vivaldi.<ver>.Stable.x64.exe`; the version comes from their appcast XML | P1 | M | Low |
+| G2 | ~~Real source for Vivaldi~~ — **done in 3.9.5** via `update.vivaldi.com/update/1.0/public/appcast.{x64,}.xml` | The old path opened a link hub page, so the version resolved empty and the update aborted | P1 | M | Low |
 | G3 | Real source for Cent | Same as G2 — currently a link only | P2 | M | Low |
 | G4 | Chrome Extended Stable channel | Chrome for Testing exposes it; the app does not | P2 | S | Low |
 | G5 | A "Chrome 109 for Windows 7/8" option | Last Chrome that runs there; a portable launcher is the natural way to keep it | P3 | M | Low |

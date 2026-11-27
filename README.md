@@ -30,9 +30,9 @@ delete the folder to uninstall.
 
 | Build | File | Notes |
 | --- | --- | --- |
-| **x64** (recommended) | [`MyBrowser_v3.9.4_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
-| x86 | [`MyBrowser_v3.9.4.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
-| Source | `MyBrowser_v3.9.4_source.7z` | source, resources, build scripts |
+| **x64** (recommended) | [`MyBrowser_v3.9.5_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
+| x86 | [`MyBrowser_v3.9.5.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
+| Source | `MyBrowser_v3.9.5_source.7z` | source, resources, build scripts |
 
 Unzip, run `MyBrowser.exe`, pick a browser and channel. Each release publishes
 `SHA256SUMS.txt`; verify with `certutil -hashfile <file> SHA256`.
@@ -51,19 +51,36 @@ Nothing touches the registry, and no elevation is needed.
 
 ## Browsers
 
-| Browser | Source | Status |
-| --- | --- | --- |
-| **Chrome** | Chrome for Testing (Stable / Beta / Dev / Canary) | Verified |
-| **Chromium** | Chromium snapshot `chrome-win.zip` | Verified |
-| **Brave** | Official release ZIP (Release / Beta / Dev / Nightly) | Verified |
-| **Firefox** | Mozilla release feed (Release / ESR / Beta / Dev / Nightly) | Verified |
-| **Edge** | Microsoft CDP API | Legacy path, not verified here |
-| **Vivaldi** | Download page link | Link only — no binary download |
-| **Cent** | Download page link | Link only — no binary download |
+Fourteen browsers, in three honest tiers. "Wired" means the launcher resolves a version
+from the vendor's own feed and installs the build itself.
 
-"Verified" means the source was checked against the live feed during development and the
-archive layout matches what the installer expects. It does not mean every Windows
-configuration was tested; see [Known limits](#known-limits).
+| Browser | Engine | Status | Source used |
+| --- | --- | --- | --- |
+| **Chrome** | Chromium | ✅ Wired — verified | Chrome for Testing (Stable / Beta / Dev / Canary) |
+| **Chromium** | Chromium | ✅ Wired — verified | `chromium-browser-snapshots` (`chrome-win.zip`) |
+| **Brave** | Chromium | ✅ Wired — verified | Official release ZIP, GitHub |
+| **Firefox** | Gecko | ✅ Wired — verified | Mozilla release feed (Release / ESR / Beta / Dev / Nightly) |
+| **Vivaldi** | Chromium | ✅ Wired — verified (3.9.5) | Sparkle appcast, x64 and x86 |
+| **Edge** | Chromium | ⚠️ Wired — unverified | Microsoft CDP API |
+| **Cent Browser** | Chromium | ⚠️ Wired — unverified | Vendor download page |
+| **ungoogled-chromium** | Chromium | 🔜 Not wired — archive inspected | GitHub release ZIP, `chrome.exe` in one folder |
+| **Supermium** | Chromium (Win 7+) | 🔜 Not wired — archive inspected | GitHub release ZIP, flat `chrome.exe` |
+| **Thorium** | Chromium | 🔜 Not wired | GitHub releases, Windows ZIP |
+| **LibreWolf** | Gecko | 🔜 Not wired | Installer only |
+| **Floorp** | Gecko | 🔜 Not wired | Installer only |
+| **Waterfox** | Gecko | 🔜 Not wired | Installer only |
+| **Opera / Opera GX** | Chromium | ❌ No portable build | Installer only, no portable ZIP published |
+| **Yandex Browser** | Chromium | ❌ No portable build | Installer only |
+| **Naver Whale** | Chromium | ❌ No portable build | Installer only |
+| **Pale Moon / Basilisk** | Goanna | ❌ Not supported | Own packaging, not Chromium or Firefox shaped |
+
+Legend: ✅ wired and checked against the live feed · ⚠️ wired, source could not be verified
+from the build environment · 🔜 archive layout confirmed, wiring is open work
+([ROADMAP](ROADMAP.md) G2) · ❌ no portable artifact to download.
+
+Adding a browser is not just a URL: each one needs a source function, an archive-shape
+branch in `INSTALLCHROME()` and a settings branch. The roadmap tracks the ones whose
+archives are already confirmed.
 
 ## Requirements
 
@@ -71,26 +88,21 @@ configuration was tested; see [Known limits](#known-limits).
 - ~1.5 GB free disk space per browser while updating
 - No runtime, no .NET, no Visual C++ redistributable — the executable is self-contained
 
-## What's new in 3.9.4
+## What's new in 3.9.5
 
-- **"No" no longer disables updates forever.** Declining a prompt used to write
-  `UpdateInterval=-1`, so one "no" meant no update checks ever again. It now records
-  just the version you skipped, and the next release prompts normally.
-- **`MyBrowser.log`.** A small, append-only log of each update step — browser, channel,
-  requested and unpacked version, failures. It is what makes a bug report actionable.
-  Delete it any time.
-- **Version assertion.** The unpacked build is compared against the version that was
-  requested; a mismatch is logged instead of silently installing something else.
-- **Last known version** is remembered, so a total feed outage now says
-  "last known: 158.0.8127.88" instead of only "failed".
-- **Signing is wired into CI.** Add `SIGNING_PFX` and `SIGNING_PFX_PASSWORD` secrets and
-  every release is Authenticode-signed; without them the build ships unsigned, as now.
-- **CI fails on Au3Check warnings**, not just errors.
+- **Vivaldi actually downloads now.** It used to point at a link hub page, which is not a
+  download — the version resolved empty and the update aborted. It now reads Vivaldi's
+  Sparkle appcast for x64 and x86 and installs the real build.
+- **Browser matrix** in the README and on the landing page, with three honest tiers
+  instead of one flat list.
+- **Support block** added, matching the rest of the fleet.
+- Repo docs rewritten to describe this as a standalone project with an explicit lineage
+  section, rather than as a fork of a repository that contained no code.
 
-Earlier releases: **3.9.3** removed hardcoded Google API credentials, dropped
+Earlier: **3.9.4** fixed "No" disabling update checks permanently and added
+`MyBrowser.log`. **3.9.3** removed hardcoded Google API credentials, dropped
 `--no-sandbox` from the defaults, fixed command injection in the injection path, added
-the archive integrity test and `SHA256SUMS.txt`. **3.9.1/3.9.2** repaired the Firefox,
-Chromium and Brave download paths and hardened the update engine.
+the archive integrity test and `SHA256SUMS.txt`.
 
 Full history: [releases](https://github.com/drsamonline/MyChrome/releases).
 
@@ -152,15 +164,42 @@ through [`SECURITY.md`](SECURITY.md), not the public issue tracker.
 Before opening a pull request, run `./build/build.ps1` and `./build/smoke.ps1`; CI runs
 both.
 
+<!-- support:sweep -->
+## Support
+
+| | |
+|---|---|
+| UPI (India) | `drsohilboi@ybl` — payee Dr Sohil Momin, open amount |
+| GitHub Sponsors | [github.com/sponsors/drsamonline](https://github.com/sponsors/drsamonline) |
+| Ko-fi | [ko-fi.com/matneo](https://ko-fi.com/matneo) |
+| PayPal | [paypal.me/drsohilmomin](https://paypal.me/drsohilmomin?locale.x=en_GB&country.x=IN) |
+| My books | [Amazon author store](https://www.amazon.com/stores/author/B08ZT331LY/allbooks?ccs_id=aed72b9f-71d9-41dc-adee-e9368a317acc) |
+| More apps | [drsamonline.github.io](https://drsamonline.github.io/) |
+| Email | [sohilmomin2000@gmail.com](mailto:sohilmomin2000@gmail.com) |
+
+Nothing is gated behind it: no accounts, no telemetry, no tracking, no "pro" build.
+
 ## Licence
 
-GPL-3.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+GPL-3.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). The complete corresponding
+source for every release is in this repository and attached to each release as
+`MyBrowser_v3.9.5_source.7z`.
 
-This is a derivative of [cnjackchen/my-chrome](https://github.com/cnjackchen/my-chrome)
-(GPL-3.0). The 3.8.x line was published as MyBrowser by
-[xixiranran](https://github.com/xixiranran/MyChrome), from whose 3.8.50 release the
-source in `src/` was recovered. Bundled third-party components keep their own terms —
-see [`licenses/`](licenses/).
+## Lineage
 
-Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and Cent are downloaded from their
-vendors at runtime and are not redistributed here.
+This project stands on its own: the source, the build, the CI, the landing page and the
+release pipeline are all here, and nothing is fetched from another repository at build
+time. Where the code came from matters, so:
+
+| | |
+| --- | --- |
+| **Original code** | [cnjackchen/my-chrome](https://github.com/cnjackchen/my-chrome) — GPL-3.0, the AutoIt launcher this is derived from |
+| **Binary lineage** | [xixiranran/MyChrome](https://github.com/xixiranran/MyChrome) — published the 3.8.x line as MyBrowser; the source in `src/` was recovered from its 3.8.50 release, which shipped binaries only |
+| **This fork** | maintained here since 3.9.0: Chrome for Testing migration, repaired Firefox / Chromium / Brave / Vivaldi sources, security fixes, build and release automation |
+
+Because the upstream is GPL-3.0, this derivative stays GPL-3.0. The full attribution
+chain, including the bundled third-party binaries, is in [`NOTICE`](NOTICE).
+
+Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and every other browser named above are
+downloaded from their vendors at runtime and are not redistributed here. No vendor logo
+or trademark is used to imply endorsement.

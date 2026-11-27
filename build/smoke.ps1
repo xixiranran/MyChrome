@@ -62,6 +62,14 @@ Check 'Firefox version feed' {
     "release $($j.LATEST_FIREFOX_VERSION), esr $($j.FIREFOX_ESR)"
 }
 
+Check 'Vivaldi appcast' {
+    $x = (Invoke-WebRequest 'https://update.vivaldi.com/update/1.0/public/appcast.x64.xml' -UseBasicParsing).Content
+    $u = [regex]::Match($x, 'url="([^"]+\.exe)"').Groups[1].Value
+    if (-not $u) { throw 'no full installer in the appcast' }
+    $v = [regex]::Match($x, 'sparkle:version="([\d.]+)"').Groups[1].Value
+    "v$v $u"
+}
+
 Check 'Update manifest is reachable' {
     $t = (Invoke-WebRequest 'https://raw.githubusercontent.com/drsamonline/MyChrome/master/update.txt' -UseBasicParsing).Content
     if ($t -notmatch 'latest=([\d.]+)') { throw 'no latest= line' }

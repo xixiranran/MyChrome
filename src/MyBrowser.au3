@@ -1558,7 +1558,7 @@ Func _STRINGENDSWITH ( $SINPUT , $SSEARCH , $FCASESENSITIVE = False )
 	Return False
 EndFunc
 Global $WINVERSION = _WINAPI_GETVERSION ( )
-Global Const $APPVERSION = "3.9.4"
+Global Const $APPVERSION = "3.9.5"
 Global $APPNAME = StringRegExpReplace ( @ScriptName , "\.[^.]*$" , "" )
 Global $INIFILE = @ScriptDir & "\" & $APPNAME & ".ini"
 Global $LANGUAGE = IniRead ( $INIFILE , "Settings" , "Language" , "Auto" )
@@ -5181,6 +5181,27 @@ Func _BRAVE_GITHUB_LATEST ( $HHTTPOPEN , $NEED_X86 )
 	If @error Then Return ""
 	Return $AM [ 1 ] & "|https://github.com/brave/brave-browser/releases/download/v" & $AM [ 1 ] & "/" & $AM [ 0 ]
 EndFunc
+Func _VIVALDI_LATEST ( $HHTTPOPEN , $NEED_X86 )
+	; Sparkle appcast: the newest enclosure is the full installer, deltas carry a .cab suffix.
+	Local $SPATH = "/update/1.0/public/appcast.x64.xml"
+	If $NEED_X86 Then $SPATH = "/update/1.0/public/appcast.xml"
+	Local $HCONNECT = _WINHTTPCONNECT ( $HHTTPOPEN , "update.vivaldi.com" )
+	If @error Then Return ""
+	Local $SBODY = _WINHTTPSIMPLESSLREQUEST ( $HCONNECT , "GET" , $SPATH , Default , Default , "User-Agent: MyBrowser" )
+	Local $IERR = @error
+	_WINHTTPCLOSEHANDLE ( $HCONNECT )
+	If $IERR Or $SBODY = "" Then Return ""
+	Local $AURL = StringRegExp ( $SBODY , 'url="([^"]+\.exe)"' , 1 )
+	If @error Then Return ""
+	Local $SVER = ""
+	Local $AVER = StringRegExp ( $SBODY , 'sparkle:version="([\d.]+)"' , 1 )
+	If Not @error Then $SVER = $AVER [ 0 ]
+	If $SVER = "" Then
+		Local $AFROMFILE = StringRegExp ( $AURL [ 0 ] , 'Vivaldi\.([\d.]+)\.exe' , 1 )
+		If Not @error Then $SVER = $AFROMFILE [ 0 ]
+	EndIf
+	Return $SVER & "|" & $AURL [ 0 ]
+EndFunc
 Func _CFT_GETLATEST ( $HHTTPOPEN , $CHANNEL , $NEED_X86 )
 	; Returns "version|zip_url" for the requested Chrome channel, or "" on failure.
 	Local $SCH = $CHANNEL
@@ -5624,6 +5645,17 @@ Func GET_LATEST_CHROME_VER ( $PLATFORM , $BROWSERTYPE , $CHANNEL , $X86 = 0 , $I
 		Return
 	EndIf
 	If StringInStr ( $BROWSERTYPE , "Vivaldi" ) Then
+		; Vivaldi publishes a Sparkle appcast per architecture. It used to be a link
+		; to a download page, which never downloaded anything.
+		Local $SVIV = _VIVALDI_LATEST ( $HHTTPOPEN , $NEED_X86 )
+		If $SVIV <> "" Then
+			Local $AVIV = StringSplit ( $SVIV , "|" , 2 )
+			If UBound ( $AVIV ) = 2 Then
+				_WINHTTPCLOSEHANDLE ( $HHTTPOPEN )
+				_SETVAR ( "DLInfo" , $AVIV [ 0 ] & "|" & $AVIV [ 1 ] & "|1|1||" & StringFormat ( $LANGUPDATEGOT , "Vivaldi" ) )
+				Return
+			EndIf
+		EndIf
 		$LATESTURLS = "https://xixiranran.github.io/tools/vivaldi/"
 		If $LATESTURLS Then
 			_SETVAR ( "DLInfo" , $LATESTVER & "|" & $LATESTURLS & "|1|1||" & StringFormat ( $LANGUPDATEGOT , "Vivaldi" ) )

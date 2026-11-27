@@ -143,6 +143,43 @@
   .st.no{background:rgba(22,21,15,.28)}
   .chip-note{margin:22px 0 0;max-width:78ch;font-size:14px;line-height:1.65;color:var(--ink-60)}
   .chip-note b{color:var(--ink);font-weight:600}
+  /* browser matrix */
+  .matrix{width:100%;border-collapse:collapse;font-size:14px}
+  .matrix th{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-40);text-align:left;padding:0 14px 10px 0;border-bottom:1px solid var(--ink);font-weight:400;
+  }
+  .matrix td{padding:13px 14px 13px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  .matrix tr:last-child td{border-bottom:0}
+  .matrix .b{font-weight:600;letter-spacing:-.005em;white-space:nowrap}
+  .matrix .e{font-family:var(--mono);font-size:11.5px;color:var(--ink-40);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+  .matrix .s{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+  .matrix .src{color:var(--ink-60);font-size:13.5px}
+  .pill{display:inline-block;padding:3px 9px;border-radius:999px;border:1px solid currentColor;font-size:10px;letter-spacing:.1em}
+  .pill.ok{color:var(--green)}
+  .pill.warn{color:#a8720a}
+  .pill.soon{color:var(--ink-40)}
+  .pill.no{color:rgba(22,21,15,.32)}
+  @media(max-width:760px){
+    .matrix thead{display:none}
+    .matrix tr{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:14px 0;border-bottom:1px solid var(--rule)}
+    .matrix td{border:0;padding:0}
+    .matrix td.src{grid-column:1/-1;font-size:13px}
+  }
+
+  /* support */
+  .support{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+  .support a{
+    background:var(--paper);padding:20px 22px;text-decoration:none;display:flex;flex-direction:column;gap:6px;
+    border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);transition:.18s;
+  }
+  @media(max-width:820px){.support{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.support{grid-template-columns:1fr}}
+  .support a:hover{background:var(--ink);color:var(--paper)}
+  .support a:hover .k{color:rgba(241,238,230,.5)}
+  .support .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-40);transition:.18s}
+  .support .v{font-size:15px;letter-spacing:-.005em}
+  .support-note{margin-top:20px;font-size:14px;color:var(--ink-60);max-width:70ch}
 
   /* changelog */
   .log{border-top:1px solid var(--ink)}
@@ -227,10 +264,10 @@
           <span data-zh>选择浏览器、更新通道和架构。MyBrowser 会下载官方版本，解压到程序旁边，并使用独立配置运行。<b>不写入注册表</b>，无需管理员权限，删除文件夹即可卸载。</span>
         </p>
         <div class="cta">
-          <a class="btn primary" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4_x64.7z">
-            <span><span data-en>Download</span><span data-zh>下载</span> x64</span><span class="k">3.9.4 · .7z</span>
+          <a class="btn primary" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5_x64.7z">
+            <span><span data-en>Download</span><span data-zh>下载</span> x64</span><span class="k">3.9.5 · .7z</span>
           </a>
-          <a class="btn ghost" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4.7z">
+          <a class="btn ghost" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5.7z">
             <span>x86</span><span class="k">32-bit</span>
           </a>
         </div>
@@ -238,7 +275,7 @@
 
       <aside class="spec">
         <dl>
-          <dt>Version</dt><dd>3.9.4</dd>
+          <dt>Version</dt><dd>3.9.5</dd>
           <dt>Chrome</dt><dd><span class="pulse"></span><span class="live" id="cft">158.0.8127.88</span></dd>
           <dt>Channels</dt><dd>Stable · Beta · Dev · Canary</dd>
           <dt>Package</dt><dd>~3.5 MB</dd>
@@ -286,28 +323,42 @@
   <section class="block" id="browsers">
     <div class="sec-head">
       <span class="num">02</span>
-      <h2><span data-en>What each browser does</span><span data-zh>各浏览器状态</span></h2>
-      <p><span data-en>Two are download-only shortcuts. The rest fetch, unpack and run.</span><span data-zh>两个仅为下载页链接，其余可自动获取、解压并运行。</span></p>
+      <h2><span data-en>Browser support</span><span data-zh>瀏覽器支援</span></h2>
+      <p><span data-en>Three honest tiers. "Wired" means it resolves a version and installs the build itself.</span><span data-zh>三個等級。「已接線」表示可自動查版本並安裝。</span></p>
     </div>
-    <div class="chips">
-      <span class="chip hero-chip"><i class="st ok"></i>Chrome<em>auto</em></span>
-      <span class="chip"><i class="st ok"></i>Chromium<em>auto</em></span>
-      <span class="chip"><i class="st ok"></i>Brave<em>auto</em></span>
-      <span class="chip"><i class="st ok"></i>Firefox<em>auto</em></span>
-      <span class="chip"><i class="st part"></i>Edge<em>legacy</em></span>
-      <span class="chip"><i class="st no"></i>Vivaldi<em>link only</em></span>
-      <span class="chip"><i class="st no"></i>Cent<em>link only</em></span>
-    </div>
+    <table class="matrix">
+      <thead>
+        <tr><th>Browser</th><th>Engine</th><th>Status</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="b">Chrome</td><td class="e">Chromium</td><td class="s"><span class="pill ok">wired</span></td><td class="src">Chrome for Testing · Stable / Beta / Dev / Canary</td></tr>
+        <tr><td class="b">Chromium</td><td class="e">Chromium</td><td class="s"><span class="pill ok">wired</span></td><td class="src">chromium-browser-snapshots · <code>chrome-win.zip</code></td></tr>
+        <tr><td class="b">Brave</td><td class="e">Chromium</td><td class="s"><span class="pill ok">wired</span></td><td class="src">Official release ZIP · GitHub</td></tr>
+        <tr><td class="b">Firefox</td><td class="e">Gecko</td><td class="s"><span class="pill ok">wired</span></td><td class="src">Mozilla release feed · Release / ESR / Beta / Dev / Nightly</td></tr>
+        <tr><td class="b">Vivaldi</td><td class="e">Chromium</td><td class="s"><span class="pill ok">wired</span></td><td class="src">Sparkle appcast · x64 and x86</td></tr>
+        <tr><td class="b">Edge</td><td class="e">Chromium</td><td class="s"><span class="pill warn">unverified</span></td><td class="src">Microsoft CDP API</td></tr>
+        <tr><td class="b">Cent Browser</td><td class="e">Chromium</td><td class="s"><span class="pill warn">unverified</span></td><td class="src">Vendor download page</td></tr>
+        <tr><td class="b">ungoogled-chromium</td><td class="e">Chromium</td><td class="s"><span class="pill soon">planned</span></td><td class="src">GitHub release ZIP · archive inspected</td></tr>
+        <tr><td class="b">Supermium</td><td class="e">Chromium · Win 7+</td><td class="s"><span class="pill soon">planned</span></td><td class="src">GitHub release ZIP · flat archive</td></tr>
+        <tr><td class="b">Thorium</td><td class="e">Chromium</td><td class="s"><span class="pill soon">planned</span></td><td class="src">GitHub releases</td></tr>
+        <tr><td class="b">LibreWolf</td><td class="e">Gecko</td><td class="s"><span class="pill soon">planned</span></td><td class="src">Installer only</td></tr>
+        <tr><td class="b">Floorp</td><td class="e">Gecko</td><td class="s"><span class="pill soon">planned</span></td><td class="src">Installer only</td></tr>
+        <tr><td class="b">Waterfox</td><td class="e">Gecko</td><td class="s"><span class="pill soon">planned</span></td><td class="src">Installer only</td></tr>
+        <tr><td class="b">Opera / Opera GX</td><td class="e">Chromium</td><td class="s"><span class="pill no">no portable build</span></td><td class="src">Installer only</td></tr>
+        <tr><td class="b">Yandex Browser</td><td class="e">Chromium</td><td class="s"><span class="pill no">no portable build</span></td><td class="src">Installer only</td></tr>
+        <tr><td class="b">Naver Whale</td><td class="e">Chromium</td><td class="s"><span class="pill no">no portable build</span></td><td class="src">Installer only</td></tr>
+      </tbody>
+    </table>
     <p class="chip-note">
-      <span data-en><b>auto</b> — resolved from the vendor's own feed and installed as a folder. <b>legacy</b> — still on the original Microsoft CDP path, unchanged in this release. <b>link only</b> — these two never downloaded a binary; the app just opens their download page.</span>
-      <span data-zh><b>auto</b> — 从厂商数据源获取并以文件夹形式安装。<b>legacy</b> — 仍使用原有 Microsoft CDP 方式，本次未改动。<b>link only</b> — 这两个从未真正下载，只打开下载页面。</span>
+      <span data-en><b>wired</b> — resolves a version from the vendor's own feed and installs it. <b>unverified</b> — wired, but the source could not be checked from the build environment. <b>planned</b> — the archive layout is confirmed; wiring is open work. <b>no portable build</b> — the vendor publishes an installer only, so there is nothing to unpack.</span>
+      <span data-zh><b>已接線</b> — 從廠商資料源取得版本並安裝。<b>未驗證</b> — 已接線，但建置環境無法確認來源。<b>規劃中</b> — 已確認封裝結構，接線待完成。<b>無可攜版</b> — 廠商僅提供安裝程式，沒有可解壓的版本。</span>
     </p>
   </section>
 
   <section class="block" id="new">
     <div class="sec-head">
       <span class="num">03</span>
-      <h2><span data-en>What changed in 3.9.4</span><span data-zh>3.9.4 更新内容</span></h2>
+      <h2><span data-en>What changed in 3.9.5</span><span data-zh>3.9.5 更新内容</span></h2>
       <p><span data-en>Update behaviour, a support log, and signing ready to switch on.</span><span data-zh>更新行為、支援記錄，以及可隨時啟用的簽章。</span></p>
     </div>
     <div class="log">
@@ -341,15 +392,15 @@
       <p><span data-en>Unzip, run the exe, pick a browser. That is the whole setup.</span><span data-zh>解压、运行、选择浏览器，安装就这些。</span></p>
     </div>
     <div class="dl">
-      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4_x64.7z">
+      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5_x64.7z">
         <span class="arch">x64 · Recommended</span>
-        <span class="name">MyBrowser 3.9.4</span>
-        <span class="meta">MyBrowser_v3.9.4_x64.7z · Windows 10/11 64-bit</span>
+        <span class="name">MyBrowser 3.9.5</span>
+        <span class="meta">MyBrowser_v3.9.5_x64.7z · Windows 10/11 64-bit</span>
       </a>
-      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4.7z">
+      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5.7z">
         <span class="arch">x86 · Legacy</span>
-        <span class="name">MyBrowser 3.9.4</span>
-        <span class="meta">MyBrowser_v3.9.4.7z · 32-bit systems</span>
+        <span class="name">MyBrowser 3.9.5</span>
+        <span class="meta">MyBrowser_v3.9.5.7z · 32-bit systems</span>
       </a>
     </div>
     <div class="sub-dl">
@@ -375,19 +426,40 @@ cd MyChrome
 <span class="a">./build/build.ps1</span>
 
 <span class="c"># output</span>
-dist/MyBrowser_v3.9.4_x64.7z
-dist/MyBrowser_v3.9.4.7z</pre>
+dist/MyBrowser_v3.9.5_x64.7z
+dist/MyBrowser_v3.9.5.7z</pre>
     </div>
+  </section>
+
+  <section class="block" id="support">
+    <div class="sec-head">
+      <span class="num">06</span>
+      <h2><span data-en>Support</span><span data-zh>贊助支持</span></h2>
+      <p><span data-en>Free, and it stays free. Nothing here unlocks a feature.</span><span data-zh>免費，而且會一直免費。贊助不解鎖任何功能。</span></p>
+    </div>
+    <div class="support">
+      <a href="https://github.com/sponsors/drsamonline"><span class="k">GitHub Sponsors</span><span class="v">github.com/sponsors/drsamonline</span></a>
+      <a href="https://ko-fi.com/matneo"><span class="k">Ko-fi</span><span class="v">ko-fi.com/matneo</span></a>
+      <a href="https://paypal.me/drsohilmomin?locale.x=en_GB&country.x=IN"><span class="k">PayPal</span><span class="v">paypal.me/drsohilmomin</span></a>
+      <a href="https://www.amazon.com/stores/author/B08ZT331LY/allbooks"><span class="k">My books</span><span class="v">Amazon author store</span></a>
+      <a href="https://drsamonline.github.io/"><span class="k">More apps</span><span class="v">drsamonline.github.io</span></a>
+      <a href="mailto:sohilmomin2000@gmail.com"><span class="k">Email</span><span class="v">sohilmomin2000@gmail.com</span></a>
+    </div>
+    <p class="support-note">
+      <span data-en>UPI (India): <b>drsohilboi@ybl</b> — payee Dr Sohil Momin, open amount. No accounts, no telemetry, no tracking, no "pro" build.</span>
+      <span data-zh>UPI（印度）：<b>drsohilboi@ybl</b> — 收款人 Dr Sohil Momin，金額自定。沒有帳號、沒有遙測、沒有追蹤、沒有「專業版」。</span>
+    </p>
   </section>
 
 </main>
 
 <footer class="wrap">
   <div class="foot">
-    <span>MyBrowser 3.9.4 · GPL-3.0 · Fork of MyChrome</span>
+    <span>MyBrowser 3.9.5 · GPL-3.0 · Dr Sohil Momin</span>
     <span>
-      <a href="https://github.com/xixiranran/MyChrome"><span data-en>Original project</span><span data-zh>原始项目</span></a> ·
-      <a href="https://github.com/drsamonline/MyChrome"><span data-en>This fork</span><span data-zh>本仓库</span></a>
+      <a href="https://github.com/drsamonline/MyChrome"><span data-en>Source</span><span data-zh>原始碼</span></a> ·
+      <a href="https://github.com/drsamonline/MyChrome/blob/master/README.md#lineage"><span data-en>Lineage</span><span data-zh>來源</span></a> ·
+      <a href="https://github.com/cnjackchen/my-chrome"><span data-en>Original code</span><span data-zh>原始程式</span></a>
     </span>
   </div>
 </footer>

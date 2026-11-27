@@ -1,6 +1,6 @@
-latest=3.9.4
-url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4.7z
-url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4_x64.7z
-update=1. 「否」只跳過當前版本，不再永久關閉更新檢查；\n2. 新增更新記錄 MyBrowser.log 便於排查；\n3. 解壓後比對版本號；\n4. 3.9.4
-update_zh-TW=1. 「否」只跳過目前版本，不再永久關閉更新檢查；\n2. 新增更新記錄 MyBrowser.log 便於排查；\n3. 解壓後比對版本號；\n4. 3.9.4
-update_en-US=1. "No" now skips one release instead of turning update checks off forever;\n2. Added MyBrowser.log for support;\n3. The unpacked build version is compared with the requested one;\n4. 3.9.4
+latest=3.9.5
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5_x64.7z
+update=1. Vivaldi 改為從官方 appcast 下載真實安裝包；\n2. 更新說明補充瀏覽器支援清單；\n3. 3.9.5
+update_zh-TW=1. Vivaldi 改為從官方 appcast 下載真實安裝檔；\n2. 更新說明補充瀏覽器支援清單；\n3. 3.9.5
+update_en-US=1. Vivaldi now downloads its real installer from the official appcast;\n2. Browser support matrix added;\n3. 3.9.5
