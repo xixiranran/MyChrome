@@ -5124,7 +5124,13 @@ Func _SELFTEST ( )
 		[ "Firefox" , "Release" , 1 ] , _
 		[ "Vivaldi" , "" , 1 ] ]
 	Local $I , $SINFO , $AINFO , $SLINES = "" , $IFAIL = 0
+	; Written after every probe, so a hung source still leaves evidence behind.
+	Local $HREP = FileOpen ( @ScriptDir & "\MyBrowser.selftest.txt" , 2 )
 	For $I = 0 To UBound ( $ABROWSER ) - 1
+		If $HREP <> - 1 Then
+			FileWrite ( $HREP , "PROBE " & $ABROWSER [ $I ] [ 0 ] & @CRLF )
+			FileFlush ( $HREP )
+		EndIf
 		_SETVAR ( "DLInfo" , "" )
 		GET_LATEST_CHROME_VER ( "win" , $ABROWSER [ $I ] [ 0 ] , $ABROWSER [ $I ] [ 1 ] , 0 , "MyBrowser.ini" )
 		$SINFO = _GETVAR ( "DLInfo" )
@@ -5138,11 +5144,11 @@ Func _SELFTEST ( )
 			$SLINES &= "INFO  " & $ABROWSER [ $I ] [ 0 ] & "  not required: " & StringReplace ( $SINFO , "|" , " " ) & @CRLF
 		EndIf
 	Next
-	Local $H = FileOpen ( @ScriptDir & "\MyBrowser.selftest.txt" , 2 )
-	If $H <> - 1 Then
-		FileWrite ( $H , $SLINES )
-		FileClose ( $H )
+	If $HREP <> - 1 Then
+		FileWrite ( $HREP , $SLINES )
+		FileClose ( $HREP )
 	EndIf
+	Return $IFAIL
 	Return $IFAIL
 EndFunc
 Func _LOG ( $SMSG )

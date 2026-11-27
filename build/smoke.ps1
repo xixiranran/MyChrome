@@ -81,7 +81,13 @@ Check 'App self-test (every wired source)' {
     $exe = Join-Path $dist 'MyBrowser.exe'
     $rep = Join-Path $dist 'MyBrowser.selftest.txt'
     Remove-Item $rep -Force -ErrorAction SilentlyContinue
-    $p = Start-Process $exe -ArgumentList '/selftest' -PassThru -Wait
+    $p = Start-Process $exe -ArgumentList '/selftest' -PassThru
+    $done = $p.WaitForExit(120000)
+    if (-not $done) {
+        Stop-Process -Id $p.Id -Force
+        $partial = if (Test-Path $rep) { Get-Content $rep -Raw } else { '(no report)' }
+        throw "self-test hung for 120s. Last probe:`n$partial"
+    }
     if (-not (Test-Path $rep)) { throw 'the self-test wrote no report' }
     $txt = Get-Content $rep -Raw
     Write-Host $txt
