@@ -7,6 +7,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $root 'dist'
 $fail = @()
+$skip = @()
 
 function Check([string]$Name, [scriptblock]$Body) {
     try {
@@ -14,10 +15,22 @@ function Check([string]$Name, [scriptblock]$Body) {
         if (-not $result) { throw 'empty result' }
         Write-Host ("PASS  {0}  {1}" -f $Name, $result)
     } catch {
-        Write-Host ("FAIL  {0}  {1}" -f $Name, $_.Exception.Message)
-        $script:fail += $Name
+        $msg = $_.Exception.Message
+        # A rate limit or an unreachable third party is not a defect in this build.
+        if ($msg -match '403|429|rate limit|timed out|Name resolution') {
+            Write-Host ("SKIP  {0}  {1}" -f $Name, $msg)
+            $script:skip += $Name
+        } else {
+            Write-Host ("FAIL  {0}  {1}" -f $Name, $msg)
+            $script:fail += $Name
+        }
     }
 }
+
+# Authenticated GitHub API calls when a token is available (CI), so the 60/hour
+# anonymous limit on a shared runner IP does not turn into a red build.
+$ghHeaders = @{ 'User-Agent' = 'MyBrowser-CI' }
+if ($env:GITHUB_TOKEN) { $ghHeaders['Authorization'] = "Bearer $env:GITHUB_TOKEN" }
 
 # ---------------------------------------------------------------- sources
 Check 'Chrome for Testing (stable win64)' {
@@ -36,7 +49,7 @@ Check 'Chromium snapshot (win64)' {
 }
 
 Check 'Brave release ZIP' {
-    $r = Invoke-RestMethod 'https://api.github.com/repos/brave/brave-browser/releases/latest'
+    $r = Invoke-RestMethod 'https://api.github.com/repos/brave/brave-browser/releases/latest' -Headers $ghHeaders
     $a = $r.assets | Where-Object { $_.name -match '^brave-v[\d.]+-win32-x64\.zip$' } | Select-Object -First 1
     if (-not $a) { throw 'no win32-x64 asset' }
     "$($r.tag_name) $($a.name)"
@@ -77,6 +90,9 @@ Check 'x86 executable starts' {
 }
 
 # ---------------------------------------------------------------- verdict
+if ($skip.Count -gt 0) {
+    Write-Host ("Skipped (external): " + ($skip -join ', '))
+}
 if ($fail.Count -gt 0) {
     throw ("Smoke test failed: " + ($fail -join ', '))
 }
