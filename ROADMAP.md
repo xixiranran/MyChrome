@@ -119,6 +119,8 @@ How to read the columns:
 | Command injection: unquoted `cd <dir>&cmd` in the DLL-injection path (9 call sites) | 3.9.3 |
 | "No" wrote `UpdateInterval=-1`, disabling update checks permanently | 3.9.4 |
 | CI smoke test went red on a GitHub API rate limit (unauthenticated) | 3.9.4 |
+| Firefox version lookup hung on Mozilla's chunked response (inlined WinHTTP reader never returned) | 3.9.6 |
+| `/selftest` blocked forever when probing in-process; now runs each probe as a child with a 20 s cap | 3.9.6 |
 
 ### Next, in order
 
