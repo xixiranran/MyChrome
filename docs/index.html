@@ -227,10 +227,10 @@
           <span data-zh>选择浏览器、更新通道和架构。MyBrowser 会下载官方版本，解压到程序旁边，并使用独立配置运行。<b>不写入注册表</b>，无需管理员权限，删除文件夹即可卸载。</span>
         </p>
         <div class="cta">
-          <a class="btn primary" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.3/MyBrowser_v3.9.3_x64.7z">
-            <span><span data-en>Download</span><span data-zh>下载</span> x64</span><span class="k">3.9.3 · .7z</span>
+          <a class="btn primary" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4_x64.7z">
+            <span><span data-en>Download</span><span data-zh>下载</span> x64</span><span class="k">3.9.4 · .7z</span>
           </a>
-          <a class="btn ghost" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.3/MyBrowser_v3.9.3.7z">
+          <a class="btn ghost" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4.7z">
             <span>x86</span><span class="k">32-bit</span>
           </a>
         </div>
@@ -238,7 +238,7 @@
 
       <aside class="spec">
         <dl>
-          <dt>Version</dt><dd>3.9.3</dd>
+          <dt>Version</dt><dd>3.9.4</dd>
           <dt>Chrome</dt><dd><span class="pulse"></span><span class="live" id="cft">158.0.8127.88</span></dd>
           <dt>Channels</dt><dd>Stable · Beta · Dev · Canary</dd>
           <dt>Package</dt><dd>~3.5 MB</dd>
@@ -307,29 +307,29 @@
   <section class="block" id="new">
     <div class="sec-head">
       <span class="num">03</span>
-      <h2><span data-en>What changed in 3.9.3</span><span data-zh>3.9.3 更新内容</span></h2>
-      <p><span data-en>Mostly security, plus a real test gate.</span><span data-zh>以安全修复为主，并加入实际测试关卡。</span></p>
+      <h2><span data-en>What changed in 3.9.4</span><span data-zh>3.9.4 更新内容</span></h2>
+      <p><span data-en>Update behaviour, a support log, and signing ready to switch on.</span><span data-zh>更新行為、支援記錄，以及可隨時啟用的簽章。</span></p>
     </div>
     <div class="log">
       <div class="log-row">
-        <span class="tag">Security<small>credentials</small></span>
-        <p><span data-en>The upstream build compiled a Google API key, OAuth client id and client secret into the binary and wrote them into your environment. This fork removed them.</span><span data-zh>上游版本把 Google API 金鑰、OAuth 用戶端 ID 與密鑰編譯進程式，並寫入系統環境變數。本版本已移除。</span></p>
+        <span class="tag">Fixed<small>update checks</small></span>
+        <p><span data-en>Answering <b>No</b> to the update prompt used to disable update checks <em>permanently</em>. It now skips just that release, and the next one asks again.</span><span data-zh>以往在更新提示中選擇「否」會<em>永久</em>關閉更新檢查。現在只跳過該版本，下一個版本仍會提示。</span></p>
       </div>
       <div class="log-row">
-        <span class="tag">Security<small>sandbox</small></span>
-        <p><span data-en><b>--no-sandbox</b> is no longer a default, and the DLL-injection path is properly quoted so a folder name containing <b>&amp;</b> can no longer inject a command.</span><span data-zh>不再預設關閉沙箱；DLL 注入路徑已正確加引號，資料夾名稱含 <b>&amp;</b> 也不會再注入指令。</span></p>
+        <span class="tag">Added<small>MyBrowser.log</small></span>
+        <p><span data-en>A small log of every update step — browser, channel, requested and unpacked version, failures. It is what turns "it broke" into a fixable report.</span><span data-zh>記錄每個更新步驟：瀏覽器、通道、請求與解壓版本、失敗原因。讓「壞了」變成可修的報告。</span></p>
       </div>
       <div class="log-row">
-        <span class="tag">Integrity<small>7z t</small></span>
-        <p><span data-en>Every download is tested before extraction, and each release publishes <b>SHA256SUMS.txt</b>.</span><span data-zh>下載完成後會先校驗再解壓，每個版本都提供 <b>SHA256SUMS.txt</b>。</span></p>
+        <span class="tag">Added<small>version check</small></span>
+        <p><span data-en>The unpacked build is compared with the version that was asked for; a mismatch is logged instead of silently installed.</span><span data-zh>解壓後會比對版本號，不一致時寫入記錄，而不是默默安裝。</span></p>
       </div>
       <div class="log-row">
-        <span class="tag">Tested<small>CI gate</small></span>
-        <p><span data-en>A smoke test now runs on every build: all four vendor feeds, the update manifest, and both binaries started and left running.</span><span data-zh>每次建置都會執行冒煙測試：四個廠商資料源、更新清單，以及兩個執行檔的啟動。</span></p>
+        <span class="tag">Signing<small>ready</small></span>
+        <p><span data-en>Authenticode signing is wired into the build — add a certificate secret and releases ship signed. Until then, verify the published <b>SHA256SUMS.txt</b>.</span><span data-zh>建置流程已支援 Authenticode 簽章，加入憑證即可啟用。在此之前請比對 <b>SHA256SUMS.txt</b>。</span></p>
       </div>
       <div class="log-row">
-        <span class="tag">Browsers<small>since 3.9.0</small></span>
-        <p><span data-en>Chrome via Chrome for Testing, plus repaired Chromium, Brave and Firefox paths. Edge is legacy; Vivaldi and Cent are link-only.</span><span data-zh>Chrome 改用 Chrome for Testing，並修復 Chromium、Brave、Firefox。Edge 仍為舊路徑，Vivaldi 與 Cent 僅開啟下載頁。</span></p>
+        <span class="tag">Security<small>since 3.9.3</small></span>
+        <p><span data-en>Hardcoded Google API credentials removed, <b>--no-sandbox</b> dropped from the defaults, command injection in the injection path fixed.</span><span data-zh>已移除內建 Google API 憑證、預設不再關閉沙箱、修復注入路徑的指令注入。</span></p>
       </div>
     </div>
   </section>
@@ -341,15 +341,15 @@
       <p><span data-en>Unzip, run the exe, pick a browser. That is the whole setup.</span><span data-zh>解压、运行、选择浏览器，安装就这些。</span></p>
     </div>
     <div class="dl">
-      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.3/MyBrowser_v3.9.3_x64.7z">
+      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4_x64.7z">
         <span class="arch">x64 · Recommended</span>
-        <span class="name">MyBrowser 3.9.3</span>
-        <span class="meta">MyBrowser_v3.9.3_x64.7z · Windows 10/11 64-bit</span>
+        <span class="name">MyBrowser 3.9.4</span>
+        <span class="meta">MyBrowser_v3.9.4_x64.7z · Windows 10/11 64-bit</span>
       </a>
-      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.3/MyBrowser_v3.9.3.7z">
+      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4.7z">
         <span class="arch">x86 · Legacy</span>
-        <span class="name">MyBrowser 3.9.3</span>
-        <span class="meta">MyBrowser_v3.9.3.7z · 32-bit systems</span>
+        <span class="name">MyBrowser 3.9.4</span>
+        <span class="meta">MyBrowser_v3.9.4.7z · 32-bit systems</span>
       </a>
     </div>
     <div class="sub-dl">
@@ -375,8 +375,8 @@ cd MyChrome
 <span class="a">./build/build.ps1</span>
 
 <span class="c"># output</span>
-dist/MyBrowser_v3.9.3_x64.7z
-dist/MyBrowser_v3.9.3.7z</pre>
+dist/MyBrowser_v3.9.4_x64.7z
+dist/MyBrowser_v3.9.4.7z</pre>
     </div>
   </section>
 
@@ -384,7 +384,7 @@ dist/MyBrowser_v3.9.3.7z</pre>
 
 <footer class="wrap">
   <div class="foot">
-    <span>MyBrowser 3.9.3 · GPL-3.0 · Fork of MyChrome</span>
+    <span>MyBrowser 3.9.4 · GPL-3.0 · Fork of MyChrome</span>
     <span>
       <a href="https://github.com/xixiranran/MyChrome"><span data-en>Original project</span><span data-zh>原始项目</span></a> ·
       <a href="https://github.com/drsamonline/MyChrome"><span data-en>This fork</span><span data-zh>本仓库</span></a>
