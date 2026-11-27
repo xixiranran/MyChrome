@@ -66,14 +66,27 @@ if ($p86.ExitCode -ne 0 -or -not (Test-Path $out86)) {
 }
 
 # ---------------------------------------------------------------- package
+# The self-updater extracts "MyBrowser.exe" from the archive, so both packages
+# must carry that exact name at the archive root.
 $sevenZip = Join-Path $res '7z.exe'
 $x64Archive = Join-Path $dist "MyBrowser_v$Version`_x64.7z"
 $x86Archive = Join-Path $dist "MyBrowser_v$Version.7z"
 
-Remove-Item $x64Archive, $x86Archive -Force -ErrorAction SilentlyContinue
-& $sevenZip a -t7z -mx=9 $x64Archive (Join-Path $dist 'MyBrowser.exe') | Out-Null
-& $sevenZip a -t7z -mx=9 $x86Archive (Join-Path $dist 'MyBrowser_x86.exe') | Out-Null
-if ($LASTEXITCODE -ne 0) { throw '7z packaging failed' }
+foreach ($pkg in @(
+    @{ Archive = $x64Archive; Source = (Join-Path $dist 'MyBrowser.exe') },
+    @{ Archive = $x86Archive; Source = (Join-Path $dist 'MyBrowser_x86.exe') }
+)) {
+    $stage = Join-Path $tool ('pkg-' + [IO.Path]::GetFileNameWithoutExtension($pkg.Archive))
+    if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
+    New-Item -ItemType Directory -Force -Path $stage | Out-Null
+    Copy-Item $pkg.Source (Join-Path $stage 'MyBrowser.exe') -Force
+    Remove-Item $pkg.Archive -Force -ErrorAction SilentlyContinue
+    Push-Location $stage
+    & $sevenZip a -t7z -mx=9 $pkg.Archive 'MyBrowser.exe' | Out-Null
+    $code = $LASTEXITCODE
+    Pop-Location
+    if ($code -ne 0) { throw "7z packaging failed for $($pkg.Archive)" }
+}
 
 Get-ChildItem $dist | Format-Table Name, Length
 Write-Host "Done: MyBrowser $Version"
