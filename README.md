@@ -30,9 +30,9 @@ delete the folder to uninstall.
 
 | Build | File | Notes |
 | --- | --- | --- |
-| **x64** (recommended) | [`MyBrowser_v3.9.5_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
-| x86 | [`MyBrowser_v3.9.5.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
-| Source | `MyBrowser_v3.9.5_source.7z` | source, resources, build scripts |
+| **x64** (recommended) | [`MyBrowser_v3.9.6_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
+| x86 | [`MyBrowser_v3.9.6.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
+| Source | `MyBrowser_v3.9.6_source.7z` | source, resources, build scripts |
 
 Unzip, run `MyBrowser.exe`, pick a browser and channel. Each release publishes
 `SHA256SUMS.txt`; verify with `certutil -hashfile <file> SHA256`.
@@ -88,21 +88,22 @@ archives are already confirmed.
 - ~1.5 GB free disk space per browser while updating
 - No runtime, no .NET, no Visual C++ redistributable — the executable is self-contained
 
-## What's new in 3.9.5
+## What's new in 3.9.6
 
-- **Vivaldi actually downloads now.** It used to point at a link hub page, which is not a
-  download — the version resolved empty and the update aborted. It now reads Vivaldi's
-  Sparkle appcast for x64 and x86 and installs the real build.
-- **Browser matrix** in the README and on the landing page, with three honest tiers
-  instead of one flat list.
-- **Support block** added, matching the rest of the fleet.
-- Repo docs rewritten to describe this as a standalone project with an explicit lineage
-  section, rather than as a fork of a repository that contained no code.
+- **Atomic folder swap with rollback.** An update now renames `App\~updated` into place
+  in three steps instead of copying over the live folder, and verifies the build that
+  actually landed. A mismatch puts the previous build back. It falls back to the old
+  copy path when the profile or the launcher lives inside the browser folder.
+- **`/selftest`.** `MyBrowser.exe /selftest` probes every wired source through the same
+  code the updater uses, writes `MyBrowser.selftest.txt` and exits with the number of
+  failures. CI now runs it, so the app's own resolvers are tested instead of a
+  PowerShell copy of them.
+- Repo docs and the roadmap status board refreshed.
 
-Earlier: **3.9.4** fixed "No" disabling update checks permanently and added
-`MyBrowser.log`. **3.9.3** removed hardcoded Google API credentials, dropped
-`--no-sandbox` from the defaults, fixed command injection in the injection path, added
-the archive integrity test and `SHA256SUMS.txt`.
+Earlier: **3.9.5** made Vivaldi download for real, added the 17-browser matrix and the
+support block. **3.9.4** fixed "No" disabling update checks permanently and added
+`MyBrowser.log`. **3.9.3** removed hardcoded Google API credentials and dropped
+`--no-sandbox` from the defaults.
 
 Full history: [releases](https://github.com/drsamonline/MyChrome/releases).
 
@@ -185,7 +186,7 @@ A donation buys no feature and no priority support — see [TERMS.md](TERMS.md).
 
 GPL-3.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). The complete corresponding
 source for every release is in this repository and attached to each release as
-`MyBrowser_v3.9.5_source.7z`.
+`MyBrowser_v3.9.6_source.7z`.
 
 ## Lineage
 

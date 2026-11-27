@@ -1,6 +1,6 @@
-latest=3.9.5
-url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5.7z
-url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.5/MyBrowser_v3.9.5_x64.7z
-update=1. Vivaldi 改為從官方 appcast 下載真實安裝包；\n2. 更新說明補充瀏覽器支援清單；\n3. 3.9.5
-update_zh-TW=1. Vivaldi 改為從官方 appcast 下載真實安裝檔；\n2. 更新說明補充瀏覽器支援清單；\n3. 3.9.5
-update_en-US=1. Vivaldi now downloads its real installer from the official appcast;\n2. Browser support matrix added;\n3. 3.9.5
+latest=3.9.6
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.6/MyBrowser_v3.9.6.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.6/MyBrowser_v3.9.6_x64.7z
+update=1. 更新改為原子替換，失敗可自動回滾；\n2. 新增 /selftest 自我檢測；\n3. 3.9.6
+update_zh-TW=1. 更新改為原子替換，失敗可自動回復；\n2. 新增 /selftest 自我檢測；\n3. 3.9.6
+update_en-US=1. Updates swap the folder atomically and roll back on failure;\n2. New /selftest self-check;\n3. 3.9.6

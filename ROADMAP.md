@@ -15,7 +15,7 @@ How to read the columns:
 
 ## Status board
 
-**Progress: 18 of 75 done (24%), 5 partial, 52 open.** Updated for 3.9.5.
+**Progress: 23 of 75 done (31%), 5 partial, 47 open.** Updated for 3.9.6.
 
 | | Category | Done | Partial | Open | Total |
 |---|---|---|---|---|---|
@@ -36,7 +36,7 @@ How to read the columns:
 | ID | Item | P | Status | In |
 |---|---|---|---|---|
 | A1 | Verify archive integrity before extraction | P0 | ✅ done | 3.9.3 |
-| A2 | Compare Content-Length with bytes received | P0 | ⬜ open | — |
+| A2 | Compare Content-Length with bytes received | P0 | ✅ done | pre-existing |
 | A3 | Assert unpacked version equals requested | P1 | ✅ done | 3.9.4 |
 | A4 | Keep last-known-good version | P1 | ✅ done | 3.9.4 |
 | A5 | Reject plain-http mirrors | P0 | ✅ done | 3.9.2 |
@@ -44,9 +44,9 @@ How to read the columns:
 | A7 | Retry 5xx with backoff | P1 | ⬜ open | — |
 | A8 | Handle HTTP 416 on resume | P2 | ⬜ open | — |
 | A9 | Verify vendor hashes where published | P2 | ⬜ open | — |
-| B1 | Atomic swap of the browser folder | P0 | 🟡 partial | 3.9.2 |
-| B2 | Auto rollback if new build fails | P1 | ⬜ open | — |
-| B3 | Profile folder never inside replaced dir | P1 | ⬜ open | — |
+| B1 | Atomic swap of the browser folder | P0 | ✅ done | 3.9.6 |
+| B2 | Auto rollback if new build fails | P1 | ✅ done | 3.9.6 |
+| B3 | Profile folder never inside replaced dir | P1 | ✅ done | 3.9.6 |
 | B4 | Skip one version, not all checks | P1 | ✅ done | 3.9.4 |
 | B5 | Clean stale temp dirs on startup | P1 | 🟡 partial | 3.9.2 |
 | B6 | Deterministic cancel | P1 | ⬜ open | — |
@@ -76,7 +76,7 @@ How to read the columns:
 | E8 | Multiple profiles per browser | P2 | ⬜ open | — |
 | E9 | Keyboard nav and accessible names | P2 | ⬜ open | — |
 | E10 | Progress in taskbar button | P3 | ⬜ open | — |
-| F1 | CLI mode | P1 | ⬜ open | — |
+| F1 | CLI mode | P1 | 🟡 partial | 3.9.6 |
 | F2 | Scoop manifest | P2 | ⬜ open | — |
 | F3 | winget manifest | P2 | ⬜ open | — |
 | F4 | ARM64 build | P2 | ⬜ open | — |
@@ -95,7 +95,7 @@ How to read the columns:
 | H5 | Changelog from commits | P2 | ⬜ open | — |
 | H6 | Pin and cache AutoIt SDK | P2 | ⬜ open | — |
 | H7 | .editorconfig + format pass | P3 | ⬜ open | — |
-| I1 | Smoke test in CI | P0 | 🟡 partial | 3.9.3 |
+| I1 | Smoke test in CI | P0 | ✅ done | 3.9.6 |
 | I2 | --selftest flag | P1 | ⬜ open | — |
 | I3 | Fault injection on download | P2 | ⬜ open | — |
 | I4 | OS x arch x browser matrix | P2 | ⬜ open | — |

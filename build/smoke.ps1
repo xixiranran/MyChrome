@@ -77,6 +77,18 @@ Check 'Update manifest is reachable' {
 }
 
 # ---------------------------------------------------------------- binaries
+Check 'App self-test (every wired source)' {
+    $exe = Join-Path $dist 'MyBrowser.exe'
+    $rep = Join-Path $dist 'MyBrowser.selftest.txt'
+    Remove-Item $rep -Force -ErrorAction SilentlyContinue
+    $p = Start-Process $exe -ArgumentList '/selftest' -PassThru -Wait
+    if (-not (Test-Path $rep)) { throw 'the self-test wrote no report' }
+    $txt = Get-Content $rep -Raw
+    Write-Host $txt
+    if ($p.ExitCode -ne 0) { throw "self-test reported $($p.ExitCode) failure(s)" }
+    "$(([regex]::Matches($txt,'(?m)^PASS')).Count) sources ok"
+}
+
 Check 'x64 executable starts' {
     $exe = Join-Path $dist 'MyBrowser.exe'
     if (-not (Test-Path $exe)) { throw 'dist/MyBrowser.exe missing' }

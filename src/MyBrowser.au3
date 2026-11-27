@@ -1558,7 +1558,7 @@ Func _STRINGENDSWITH ( $SINPUT , $SSEARCH , $FCASESENSITIVE = False )
 	Return False
 EndFunc
 Global $WINVERSION = _WINAPI_GETVERSION ( )
-Global Const $APPVERSION = "3.9.5"
+Global Const $APPVERSION = "3.9.6"
 Global $APPNAME = StringRegExpReplace ( @ScriptName , "\.[^.]*$" , "" )
 Global $INIFILE = @ScriptDir & "\" & $APPNAME & ".ini"
 Global $LANGUAGE = IniRead ( $INIFILE , "Settings" , "Language" , "Auto" )
@@ -1580,6 +1580,9 @@ EndIf
 DllCall ( "user32.dll" , "bool" , "SetProcessDPIAware" )
 $__HWND_VARS = GUICreate ( "main thread" )
 GUICtrlCreateEdit ( "" , 0 , 0 , 350 )
+If _HASPARAM ( "/selftest" ) Then
+	Exit _SELFTEST ( )
+EndIf
 Func _STARTTHREAD ( $EXE , $FUNCTION , $P1 = "" , $P2 = "" , $P3 = "" , $P4 = "" , $P5 = "" , $P6 = "" , $P7 = "" , $P8 = "" , $P9 = "" , $P10 = "" )
 	Local $I , $P , $PARA
 	For $I = 1 To 10
@@ -5102,6 +5105,45 @@ Func CANCELUPDATE ( )
 		$ISUPDATING = 0
 	EndIf
 EndFunc
+Func _HASPARAM ( $SFLAG )
+	Local $I
+	For $I = 1 To $CMDLINE [ 0 ]
+		If $CMDLINE [ $I ] = $SFLAG Then Return 1
+	Next
+	Return 0
+EndFunc
+Func _SELFTEST ( )
+	; Probes every wired source through the same code the update path uses, then writes
+	; a report next to the exe. Exit code is the number of required sources that failed.
+	Local $ABROWSER [ 6 ] [ 3 ] = [ _
+		[ "Chrome" , "Stable" , 1 ] , _
+		[ "Chromium" , "" , 1 ] , _
+		[ "Brave" , "Release" , 1 ] , _
+		[ "Firefox" , "Release" , 1 ] , _
+		[ "Vivaldi" , "" , 1 ] , _
+		[ "Edge" , "Stable" , 0 ] ]
+	Local $I , $SINFO , $AINFO , $SLINES = "" , $IFAIL = 0
+	For $I = 0 To UBound ( $ABROWSER ) - 1
+		_SETVAR ( "DLInfo" , "" )
+		GET_LATEST_CHROME_VER ( "win" , $ABROWSER [ $I ] [ 0 ] , $ABROWSER [ $I ] [ 1 ] , 0 , "MyBrowser.ini" )
+		$SINFO = _GETVAR ( "DLInfo" )
+		$AINFO = StringSplit ( $SINFO , "|" , 2 )
+		If UBound ( $AINFO ) >= 2 And $AINFO [ 0 ] <> "" Then
+			$SLINES &= "PASS  " & $ABROWSER [ $I ] [ 0 ] & "  " & $AINFO [ 0 ] & "  " & StringLeft ( $AINFO [ 1 ] , 90 ) & @CRLF
+		ElseIf $ABROWSER [ $I ] [ 2 ] = 1 Then
+			$IFAIL += 1
+			$SLINES &= "FAIL  " & $ABROWSER [ $I ] [ 0 ] & "  " & StringReplace ( $SINFO , "|" , " " ) & @CRLF
+		Else
+			$SLINES &= "INFO  " & $ABROWSER [ $I ] [ 0 ] & "  not required: " & StringReplace ( $SINFO , "|" , " " ) & @CRLF
+		EndIf
+	Next
+	Local $H = FileOpen ( @ScriptDir & "\MyBrowser.selftest.txt" , 2 )
+	If $H <> - 1 Then
+		FileWrite ( $H , $SLINES )
+		FileClose ( $H )
+	EndIf
+	Return $IFAIL
+EndFunc
 Func _LOG ( $SMSG )
 	; Append-only support log next to the exe. Never let logging break an update.
 	Local $SLOGFILE = @ScriptDir & "\MyBrowser.log"
@@ -6401,8 +6443,61 @@ Func APPLYUPDATE ( )
 	ElseIf @TrayIconVisible Then
 		TrayTip ( "MyBrowser" , $LANGAPPLYUPDATE & " ..." , 5 , 1 )
 	EndIf
-	FileMove ( $CHROMEDIR & "\~updated\*.*" , $CHROMEDIR , 9 )
-	DirCopy ( $CHROMEDIR & "\~updated" , $CHROMEDIR , 1 )
+	; B1/B2: three renames instead of a copy over the live folder. Each step is
+	; reversible, and the working build is not destroyed until the new one lands.
+	Local $SNEWDIR = $CHROMEDIR & ".new"
+	Local $SOLDDIR = $CHROMEDIR & ".old"
+	Local $SBADDIR = $CHROMEDIR & ".bad"
+	Local $SSWAPOK = 0
+	Local $SAPPDIR = StringLower ( FULLPATH ( $CHROMEDIR ) )
+	Local $SPROFABS = StringLower ( FULLPATH ( $USERDATADIR ) )
+	If $SPROFABS <> "" And StringLeft ( $SPROFABS , StringLen ( $SAPPDIR ) ) = $SAPPDIR Then
+		_LOG ( "atomic swap skipped: the profile folder is inside the browser folder" )
+	ElseIf $SAPPDIR = StringLower ( @ScriptDir ) Then
+		_LOG ( "atomic swap skipped: the browser folder is the app folder" )
+	Else
+		If FileExists ( $SNEWDIR ) Then DirRemove ( $SNEWDIR , 1 )
+		If FileExists ( $SOLDDIR ) Then DirRemove ( $SOLDDIR , 1 )
+		If DirMove ( $CHROMEDIR & "\~updated" , $SNEWDIR , 1 ) Then
+			If DirMove ( $CHROMEDIR , $SOLDDIR , 1 ) Then
+				If DirMove ( $SNEWDIR , $CHROMEDIR , 1 ) Then
+					$SSWAPOK = 1
+					_LOG ( "atomic swap applied" )
+				Else
+					DirMove ( $SOLDDIR , $CHROMEDIR , 1 )
+					_LOG ( "atomic swap failed on step 3, old build restored" )
+				EndIf
+			Else
+				DirMove ( $SNEWDIR , $CHROMEDIR & "\~updated" , 1 )
+				_LOG ( "atomic swap failed on step 2" )
+			EndIf
+		Else
+			_LOG ( "atomic swap failed on step 1" )
+		EndIf
+	EndIf
+	If Not $SSWAPOK Then
+		If FileExists ( $CHROMEDIR & "\~updated" ) Then
+			FileMove ( $CHROMEDIR & "\~updated\*.*" , $CHROMEDIR , 9 )
+			DirCopy ( $CHROMEDIR & "\~updated" , $CHROMEDIR , 1 )
+		EndIf
+	EndIf
+	; B2: verify the build that actually landed, and put the old one back if not.
+	If $SSWAPOK And $CHROMEEXE <> "" And $LATESTCHROMEVER <> "" Then
+		Local $SPOSTVER = FileGetVersion ( $CHROMEDIR & "\" & $CHROMEEXE )
+		If $SPOSTVER <> "" And $SPOSTVER <> $LATESTCHROMEVER Then
+			_LOG ( "post-apply check failed: " & $SPOSTVER & " vs " & $LATESTCHROMEVER )
+			If FileExists ( $SBADDIR ) Then DirRemove ( $SBADDIR , 1 )
+			If DirMove ( $CHROMEDIR , $SBADDIR , 1 ) Then
+				If DirMove ( $SOLDDIR , $CHROMEDIR , 1 ) Then
+					_LOG ( "rolled back to the previous build" )
+				Else
+					_LOG ( "rollback move failed; previous build left at " & $SOLDDIR )
+				EndIf
+			EndIf
+			If FileExists ( $SBADDIR ) Then DirRemove ( $SBADDIR , 1 )
+		EndIf
+	EndIf
+	If FileExists ( $SOLDDIR ) Then DirRemove ( $SOLDDIR , 1 )
 	Local $CHROMEDLL = $CHROMEDIR & "\chrome.dll"
 	$CHROMEFILEVERSION = FileGetVersion ( $CHROMEDLL , "FileVersion" )
 	Local $EDGEDLL = $CHROMEDIR & "\msedge.dll"
