@@ -49,12 +49,20 @@ if ($checkExit -gt 1) { throw "Au3Check failed with exit code $checkExit" }
 $au3 = Join-Path $src 'MyBrowser.au3'
 
 Write-Host 'Compiling x64 ...'
-& $aut2exe64 /in $au3 /out (Join-Path $dist 'MyBrowser.exe') /x64 /comp 4
-if (-not (Test-Path (Join-Path $dist 'MyBrowser.exe'))) { throw 'x64 compile produced no output' }
+$out64 = Join-Path $dist 'MyBrowser.exe'
+Remove-Item $out64 -Force -ErrorAction SilentlyContinue
+$log64 = & $aut2exe64 /in $au3 /out $out64 /x64 /comp 4 /console 2>&1 | Out-String
+Write-Host "exit=$LASTEXITCODE"
+Write-Host $log64
+if (-not (Test-Path $out64)) { throw "x64 compile produced no output. $log64" }
 
 Write-Host 'Compiling x86 ...'
-& $aut2exe /in $au3 /out (Join-Path $dist 'MyBrowser_x86.exe') /x86 /comp 4
-if (-not (Test-Path (Join-Path $dist 'MyBrowser_x86.exe'))) { throw 'x86 compile produced no output' }
+$out86 = Join-Path $dist 'MyBrowser_x86.exe'
+Remove-Item $out86 -Force -ErrorAction SilentlyContinue
+$log86 = & $aut2exe /in $au3 /out $out86 /x86 /comp 4 /console 2>&1 | Out-String
+Write-Host "exit=$LASTEXITCODE"
+Write-Host $log86
+if (-not (Test-Path $out86)) { throw "x86 compile produced no output. $log86" }
 
 # ---------------------------------------------------------------- package
 $sevenZip = Join-Path $res '7z.exe'
