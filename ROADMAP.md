@@ -13,38 +13,138 @@ How to read the columns:
 
 ---
 
-## Shipped so far
+## Status board
 
-| Item | Shipped in |
-| --- | --- |
-| A1 — archive integrity test before extraction | 3.9.3 |
-| A5 — https-only mirrors on the fallback path | 3.9.2 |
-| B1 — pre-flight check before applying (partial) | 3.9.2 |
-| B5 — temp cleanup on failure and success (partial) | 3.9.2 |
-| C2 — `SHA256SUMS.txt` per release | 3.9.3 |
-| C3 — `--no-sandbox` removed from the defaults | 3.9.3 |
-| C5 — injection off by default and labelled | 3.9.x |
-| E2 — DPI awareness | 3.9.3 |
-| H2 — build fails if the version drifts (partial) | 3.9.3 |
-| H3 — `docs/ARCHITECTURE.md` | 3.9.3 |
-| I1 — smoke test in CI (partial: sources + launch) | 3.9.3 |
-| A3 — unpacked version compared with the requested one | 3.9.4 |
-| A4 — last known version kept for feed outages | 3.9.4 |
-| B4 — "No" skips one release, not all future checks | 3.9.4 |
-| B9 — update log for support (`MyBrowser.log`) | 3.9.4 |
-| C1 — signing wired in CI, activates with a certificate secret (partial) | 3.9.4 |
-| H4 — CI fails on Au3Check warnings | 3.9.4 |
-| K1 — GPL-3.0 `LICENSE` and `NOTICE` | 3.9.1 |
-| K2 — `licenses/` with third-party terms | 3.9.3 |
-| G2 — Vivaldi now downloads from its real appcast (partial: x64/x86) | 3.9.5 |
+**Progress: 18 of 75 done (24%), 5 partial, 52 open.** Updated for 3.9.5.
 
-Plus two findings that were not on the original list:
+| | Category | Done | Partial | Open | Total |
+|---|---|---|---|---|---|
+| A | Download integrity | 4 | 0 | 5 | 9 |
+| B | Update engine | 2 | 2 | 6 | 10 |
+| C | Security and trust | 4 | 1 | 3 | 8 |
+| D | Performance | 0 | 0 | 4 | 4 |
+| E | User experience | 1 | 0 | 9 | 10 |
+| F | Portability | 0 | 0 | 5 | 5 |
+| G | Browser coverage | 1 | 0 | 6 | 7 |
+| H | Maintainability | 2 | 1 | 4 | 7 |
+| I | Testing | 0 | 1 | 4 | 5 |
+| J | Distribution | 1 | 0 | 3 | 4 |
+| K | Licensing | 3 | 0 | 0 | 3 |
+| L | Long term | 0 | 0 | 3 | 3 |
+| | **Total** | **18** | **5** | **52** | **75** |
 
-- **Hardcoded Google API credentials** — an API key, an OAuth client id and a client
-  secret were compiled into the binary and written into the user's environment with
-  `setx`. Removed in 3.9.3.
-- **Unquoted `cd <dir>&cmd`** in the DLL-injection path: a folder name containing a space
-  or `&` broke it, and `&` injected a second command into `cmd.exe`. Quoted in 3.9.3.
+| ID | Item | P | Status | In |
+|---|---|---|---|---|
+| A1 | Verify archive integrity before extraction | P0 | ✅ done | 3.9.3 |
+| A2 | Compare Content-Length with bytes received | P0 | ⬜ open | — |
+| A3 | Assert unpacked version equals requested | P1 | ✅ done | 3.9.4 |
+| A4 | Keep last-known-good version | P1 | ✅ done | 3.9.4 |
+| A5 | Reject plain-http mirrors | P0 | ✅ done | 3.9.2 |
+| A6 | Cache Brave version 24 h (rate limits) | P1 | ⬜ open | — |
+| A7 | Retry 5xx with backoff | P1 | ⬜ open | — |
+| A8 | Handle HTTP 416 on resume | P2 | ⬜ open | — |
+| A9 | Verify vendor hashes where published | P2 | ⬜ open | — |
+| B1 | Atomic swap of the browser folder | P0 | 🟡 partial | 3.9.2 |
+| B2 | Auto rollback if new build fails | P1 | ⬜ open | — |
+| B3 | Profile folder never inside replaced dir | P1 | ⬜ open | — |
+| B4 | Skip one version, not all checks | P1 | ✅ done | 3.9.4 |
+| B5 | Clean stale temp dirs on startup | P1 | 🟡 partial | 3.9.2 |
+| B6 | Deterministic cancel | P1 | ⬜ open | — |
+| B7 | Speed and ETA in progress | P2 | ⬜ open | — |
+| B8 | Background check with notification | P2 | ⬜ open | — |
+| B9 | Update log | P2 | ✅ done | 3.9.4 |
+| B10 | Concurrent-instance lock | P2 | ⬜ open | — |
+| C1 | Authenticode signing | P0 | 🟡 partial | 3.9.4 |
+| C2 | SHA256SUMS per release | P1 | ✅ done | 3.9.3 |
+| C3 | No --no-sandbox default | P0 | ✅ done | 3.9.3 |
+| C4 | Reconsider --test-type | P2 | ⬜ open | — |
+| C5 | Injection off by default and labelled | P1 | ✅ done | 3.9.x |
+| C6 | Build provenance attestation | P2 | ⬜ open | — |
+| C7 | VirusTotal link in release notes | P3 | ⬜ open | — |
+| C8 | Document no telemetry | P2 | ✅ done | 3.9.3 |
+| D1 | Strip unreferenced UDFs | P2 | ⬜ open | — |
+| D2 | Split 6,900-line file into includes | P2 | ⬜ open | — |
+| D3 | Adaptive segment count | P3 | ⬜ open | — |
+| D4 | Keep previous build for rollback | P3 | ⬜ open | — |
+| E1 | First-run wizard | P1 | ⬜ open | — |
+| E2 | DPI awareness | P1 | ✅ done | 3.9.3 |
+| E3 | Strings out of code into language files | P1 | ⬜ open | — |
+| E4 | More languages | P2 | ⬜ open | — |
+| E5 | Error dialogs with copy details | P1 | ⬜ open | — |
+| E6 | Installed vs latest side by side | P1 | ⬜ open | — |
+| E7 | Remember window position | P2 | ⬜ open | — |
+| E8 | Multiple profiles per browser | P2 | ⬜ open | — |
+| E9 | Keyboard nav and accessible names | P2 | ⬜ open | — |
+| E10 | Progress in taskbar button | P3 | ⬜ open | — |
+| F1 | CLI mode | P1 | ⬜ open | — |
+| F2 | Scoop manifest | P2 | ⬜ open | — |
+| F3 | winget manifest | P2 | ⬜ open | — |
+| F4 | ARM64 build | P2 | ⬜ open | — |
+| F5 | Fully portable settings | P2 | ⬜ open | — |
+| G1 | Real, verified source for Edge | P0 | ⬜ open | — |
+| G2 | Real source for Vivaldi | P1 | ✅ done | 3.9.5 |
+| G3 | Real source for Cent | P2 | ⬜ open | — |
+| G4 | Chrome Extended Stable | P2 | ⬜ open | — |
+| G5 | Chrome 109 for Windows 7/8 | P3 | ⬜ open | — |
+| G6 | Warn if win32 Chrome retired | P2 | ⬜ open | — |
+| G7 | Firefox channel naming check | P3 | ⬜ open | — |
+| H1 | Restore include-based structure | P1 | ⬜ open | — |
+| H2 | Single source of truth for version | P1 | 🟡 partial | 3.9.3 |
+| H3 | docs/ARCHITECTURE.md | P1 | ✅ done | 3.9.3 |
+| H4 | CI fails on warnings | P2 | ✅ done | 3.9.4 |
+| H5 | Changelog from commits | P2 | ⬜ open | — |
+| H6 | Pin and cache AutoIt SDK | P2 | ⬜ open | — |
+| H7 | .editorconfig + format pass | P3 | ⬜ open | — |
+| I1 | Smoke test in CI | P0 | 🟡 partial | 3.9.3 |
+| I2 | --selftest flag | P1 | ⬜ open | — |
+| I3 | Fault injection on download | P2 | ⬜ open | — |
+| I4 | OS x arch x browser matrix | P2 | ⬜ open | — |
+| I5 | Upgrade test 3.8.50 to current | P1 | ⬜ open | — |
+| J1 | Enable GitHub Pages | P0 | ✅ done | 3.9.4 |
+| J2 | Mirror releases for mainland China | P1 | ⬜ open | — |
+| J3 | Issue templates and support doc | P2 | ⬜ open | — |
+| J4 | Release notes in Chinese | P2 | ⬜ open | — |
+| K1 | GPL-3.0 LICENSE and NOTICE | P0 | ✅ done | 3.9.1 |
+| K2 | licenses/ for bundled binaries | P1 | ✅ done | 3.9.3 |
+| K3 | Source archive on every release | P1 | ✅ done | 3.9.1 |
+| L1 | Rewrite in Go or Rust | P2 | ⬜ open | — |
+| L2 | Freeze AutoIt as maintenance branch | P2 | ⬜ open | — |
+| L3 | Or a .NET single-file tray app | P3 | ⬜ open | — |
+
+### Shipped but not on the original list
+
+| Finding | Fixed in |
+|---|---|
+| Hardcoded Google API key, OAuth client id and client secret in the binary, written to the user environment | 3.9.3 |
+| Command injection: unquoted `cd <dir>&cmd` in the DLL-injection path (9 call sites) | 3.9.3 |
+| "No" wrote `UpdateInterval=-1`, disabling update checks permanently | 3.9.4 |
+| CI smoke test went red on a GitHub API rate limit (unauthenticated) | 3.9.4 |
+
+### Next, in order
+
+| Order | ID | Item | Why now |
+|---|---|---|---|
+| 1 | G1 | Verified Edge source over the proxy-aware WinHTTP path | Only major browser neither verified nor proxy-aware |
+| 2 | C1 | Finish signing (needs a certificate secret) | Hook is in CI; nothing else improves trust as much |
+| 3 | B1+B2 | Atomic swap with rollback | Turns "usually works" into "cannot brick my browser" |
+| 4 | I1 | Smoke test that downloads a real browser | Everything else stays guesswork without it |
+| 5 | F1 | CLI mode | Prerequisite for I2, I3, I5 |
+| 6 | A2 | Content-Length check before unpack | Cheap; converts confusing failures into clear ones |
+| 7 | E1+E3 | First-run wizard; strings out of code | First things a new user and a translator hit |
+| 8 | H2+H1 | One version source; includes instead of one 6,900-line file | Slows every other change |
+| 9 | J2 | Mirror releases for mainland China | Large part of the audience |
+| 10 | A6 | Cache Brave version | Confirmed real: CI hit the GitHub rate limit |
+
+### Release log
+
+| Version | Date | Shipped |
+|---|---|---|
+| 3.9.0 | 2026-11-27 | Rebuilt from recovered source; Chrome via Chrome for Testing; source, build and CI published |
+| 3.9.1 | 2026-11-27 | Firefox, Chromium and Brave sources repaired; GPL-3.0 LICENSE and NOTICE |
+| 3.9.2 | 2026-11-27 | Disk-space guard, temp cleanup, apply pre-flight, portable flags, modern UA, HTTPS-only mirrors |
+| 3.9.3 | 2026-11-27 | Google credentials removed; `--no-sandbox` dropped; command injection fixed; archive integrity test; SHA256SUMS; README rebuilt; SECURITY, PRIVACY, licenses, ARCHITECTURE |
+| 3.9.4 | 2026-11-27 | Skip one version not all; `MyBrowser.log`; version assertion; last-known version; signing hook; CI fails on warnings |
+| 3.9.5 | 2026-11-27 | Vivaldi real appcast; 17-browser matrix; support block; standalone framing; TERMS.md |
 
 ## A. Download integrity and correctness
 
