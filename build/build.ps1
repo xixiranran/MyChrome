@@ -10,6 +10,12 @@ $tool = Join-Path $root '.build'
 
 $Version = (Select-String -Path (Join-Path $src 'MyBrowser.au3') -Pattern 'Global Const \$APPVERSION = "([^"]+)"').Matches[0].Groups[1].Value
 if (-not $Version) { throw 'Could not read $APPVERSION from src/MyBrowser.au3' }
+
+# The version is embedded in the language files too; a mismatch ships a wrong label.
+$iniVersion = (Select-String -Path (Join-Path $res 'en-US.ini') -Pattern '^Version=(.+)$').Matches[0].Groups[1].Value.Trim()
+if ($iniVersion -ne $Version) {
+    throw "Version mismatch: src/MyBrowser.au3 says $Version, resources/en-US.ini says $iniVersion"
+}
 Write-Host "Building MyBrowser $Version"
 
 New-Item -ItemType Directory -Force -Path $dist, $tool | Out-Null
@@ -87,6 +93,15 @@ foreach ($pkg in @(
     Pop-Location
     if ($code -ne 0) { throw "7z packaging failed for $($pkg.Archive)" }
 }
+
+# ---------------------------------------------------------------- checksums
+$sums = Join-Path $dist 'SHA256SUMS.txt'
+Remove-Item $sums -Force -ErrorAction SilentlyContinue
+Get-ChildItem $dist -Filter '*.7z' | ForEach-Object {
+    $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+    "$hash  $($_.Name)"
+} | Set-Content -Path $sums -Encoding ascii
+Write-Host "Wrote $sums"
 
 Get-ChildItem $dist | Format-Table Name, Length
 Write-Host "Done: MyBrowser $Version"

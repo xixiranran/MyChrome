@@ -1,90 +1,158 @@
-# MyBrowser (MyChrome fork) — 3.9.2
+<div align="center">
 
-Portable multi-browser launcher for Windows. Downloads a browser build, unpacks it
-into its own folder, and runs it with its own profile — no installer, no registry,
-no admin rights. Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and Cent.
+# MyBrowser
 
-This fork keeps the app working with **current browsers**. Chrome stable at the time of
-this release is 158.0.8127.88, Chromium snapshots are at 160.0.8187.0, Brave at 1.100.59,
-Firefox at 154.0.1.
+**Portable browser launcher for Windows.** Downloads a browser, unpacks it beside the
+executable and runs it with its own profile. No installer, no registry, no admin rights —
+delete the folder to uninstall.
 
-- **Download:** [Releases](https://github.com/drsamonline/MyChrome/releases)
-- **Landing page:** [drsamonline.github.io/MyChrome](https://drsamonline.github.io/MyChrome/)
-- **Upstream project:** [xixiranran/MyChrome](https://github.com/xixiranran/MyChrome)
+[![Release](https://img.shields.io/github/v/release/drsamonline/MyChrome?style=flat-square&label=release&color=e04b12)](https://github.com/drsamonline/MyChrome/releases)
+[![Downloads](https://img.shields.io/github/downloads/drsamonline/MyChrome/total?style=flat-square&color=e04b12)](https://github.com/drsamonline/MyChrome/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/drsamonline/MyChrome/build.yml?style=flat-square&label=build)](https://github.com/drsamonline/MyChrome/actions/workflows/build.yml)
+[![License](https://img.shields.io/github/license/drsamonline/MyChrome?style=flat-square&color=e04b12)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6?style=flat-square)](#requirements)
 
-## What changed in 3.9.2
+[![Chrome](https://img.shields.io/badge/Chrome%20for%20Testing-158.0.8127.88-4285F4?style=flat-square)](https://googlechromelabs.github.io/chrome-for-testing/)
+[![AutoIt](https://img.shields.io/badge/AutoIt-3.3.16.1-1B6B93?style=flat-square)](https://www.autoitscript.com/)
+[![Landing page](https://img.shields.io/badge/landing%20page-drsamonline.github.io-e04b12?style=flat-square)](https://drsamonline.github.io/MyChrome/)
 
-| Change | Why |
-| --- | --- |
-| Disk-space check before an update | Chrome needs roughly 1.5 GB free while the old build is still in place. Below 2 GB the app now asks first instead of failing halfway. |
-| Temp files cleaned up | A failed extraction left the downloaded installer behind; `~update` is now removed on failure and after a successful apply. |
-| Incomplete updates are refused | The extract step is verified before anything is copied over the working browser. |
-| Portable launch flags | `--no-first-run --no-default-browser-check` added, so a fresh profile skips the welcome flow and the default-browser prompt. |
-| Modern User-Agent | Requests no longer announce Chrome 56, which some CDNs reject. |
-| Retried lookups | The Chrome for Testing lookup retries three times before falling back to the installer path. |
+**[Download](https://github.com/drsamonline/MyChrome/releases/latest)** ·
+[Landing page](https://drsamonline.github.io/MyChrome/) ·
+[What changed](https://github.com/drsamonline/MyChrome/releases) ·
+[Roadmap](ROADMAP.md) ·
+[Architecture](docs/ARCHITECTURE.md)
 
-## What changed in 3.9.1
+</div>
 
-| Change | Why |
-| --- | --- |
-| Firefox updates resolve a version again | The version was never set, so the update check reported failure and never downloaded. The version now comes from `product-details.mozilla.org`. |
-| Chromium uses the snapshot ZIP | `chrome-win.zip` from the same snapshot instead of `mini_installer.exe`, so it installs through the same direct-ZIP path as Chrome. |
-| Brave uses the official release ZIP | `brave-v*-win32-{x64,ia32}.zip` from Brave's GitHub releases, with the Omaha path kept as a fallback. |
-| Licence corrected | The upstream project is GPL-3.0; `LICENSE` and `NOTICE` now ship with the source. |
+---
 
-## What changed in 3.9.0
+## Download
 
-| Change | Why |
-| --- | --- |
-| Chrome now comes from the official **Chrome for Testing** feed (`last-known-good-versions-with-downloads.json`) | The old path asked Google's Omaha update service for an installer and then had to unpack it. Google now serves a 536 MB "uncompressed" installer there, and the unpack step is what kept breaking. Chrome for Testing gives a direct `chrome-win64.zip` / `chrome-win32.zip` per channel. |
-| Direct ZIP install path | The archive is extracted straight into the browser folder — no nested `chrome.7z`, no `Chrome-bin` version guessing. Roughly 170 MB instead of 536 MB per update. |
-| Omaha kept as fallback | If the Chrome for Testing feed is unreachable, the old installer path still runs. |
-| Full source published | Upstream ships binaries only. `src/MyBrowser.au3` is the complete AutoIt source, so the app can be built and maintained from this repo. |
-| Reproducible build | `build/build.ps1` plus a GitHub Actions workflow compile both architectures with AutoIt3 3.3.16.1 and package the `.7z` assets. |
-| Update endpoints point here | `update.txt` and the in-app updater now resolve to this fork. |
+| Build | File | Notes |
+| --- | --- | --- |
+| **x64** (recommended) | [`MyBrowser_v3.9.3_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
+| x86 | [`MyBrowser_v3.9.3.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
+| Source | `MyBrowser_v3.9.3_source.7z` | source, resources, build scripts |
 
-Channels: Stable, Beta, Dev, Canary. Architectures: x64 and x86.
+Unzip, run `MyBrowser.exe`, pick a browser and channel. Each release publishes
+`SHA256SUMS.txt`; verify with `certutil -hashfile <file> SHA256`.
+
+The executable is unsigned, so Windows may warn on first run.
+
+## What it does
+
+```
+resolve the current build  →  download it  →  extract it beside the exe  →  run it
+```
+
+It asks the vendor's own feed what the current build is, downloads it in segments with
+resume, extracts it into `App\`, and starts it with a profile folder of your choosing.
+Nothing touches the registry, and no elevation is needed.
+
+## Browsers
+
+| Browser | Source | Status |
+| --- | --- | --- |
+| **Chrome** | Chrome for Testing (Stable / Beta / Dev / Canary) | Verified |
+| **Chromium** | Chromium snapshot `chrome-win.zip` | Verified |
+| **Brave** | Official release ZIP (Release / Beta / Dev / Nightly) | Verified |
+| **Firefox** | Mozilla release feed (Release / ESR / Beta / Dev / Nightly) | Verified |
+| **Edge** | Microsoft CDP API | Legacy path, not verified here |
+| **Vivaldi** | Download page link | Link only — no binary download |
+| **Cent** | Download page link | Link only — no binary download |
+
+"Verified" means the source was checked against the live feed during development and the
+archive layout matches what the installer expects. It does not mean every Windows
+configuration was tested; see [Known limits](#known-limits).
+
+## Requirements
+
+- Windows 10 or Windows 11 (x64 or x86)
+- ~1.5 GB free disk space per browser while updating
+- No runtime, no .NET, no Visual C++ redistributable — the executable is self-contained
+
+## What's new in 3.9.3
+
+- **Hardcoded Google API credentials removed.** The upstream build shipped a Google API
+  key, OAuth client id and client secret as literals and wrote them into your environment
+  with `setx`. This fork does not redistribute them.
+- **`--no-sandbox` is no longer a default.** It disabled the renderer sandbox on every
+  launch. Add it back in Settings → Params only if you must, and know what it costs.
+- **Archive integrity is checked before extraction**, so a truncated download reports
+  itself instead of failing inside the unpack step.
+- **Command quoting fixed.** Folder paths with spaces or `&` no longer break the DLL
+  injection step or inject a second command into `cmd.exe`.
+- **DPI awareness** — the UI is no longer blurry at 125% scaling.
+- **`SHA256SUMS.txt`** published with every release.
+
+Full history: [releases](https://github.com/drsamonline/MyChrome/releases).
 
 ## Build
 
-Windows with PowerShell 7, or let GitHub Actions do it (`Actions → build → Run workflow`).
+Requires Windows with PowerShell 7, or use the CI workflow
+(`Actions → build → Run workflow`).
 
 ```powershell
-./build/build.ps1
+git clone https://github.com/drsamonline/MyChrome
+cd MyChrome
+./build/build.ps1     # downloads the AutoIt3 SDK, checks syntax, compiles x64 + x86, packages
+./build/smoke.ps1     # checks every download source and starts both binaries
 ```
 
-The script downloads the AutoIt3 SDK, copies `resources/` next to the script for
-`FileInstall()`, runs `Au3Check`, compiles x64 and x86, and writes the release
-archives to `dist/`.
+Output lands in `dist/`: two `.7z` archives and `SHA256SUMS.txt`. Pushing a `v*` tag
+attaches them to a GitHub release.
 
-Pushing a `v*` tag attaches both archives to a GitHub release.
-
-## Layout
+## Project layout
 
 ```
-src/MyBrowser.au3      application source (AutoIt3)
-resources/             files embedded into the exe at compile time
-build/build.ps1        build and packaging
-docs/                  landing page published to gh-pages
-update.txt             self-update manifest read by the app
+src/MyBrowser.au3        application source (AutoIt3, single file — see ROADMAP H1)
+resources/               files embedded into the exe at compile time
+build/build.ps1          build and packaging
+build/smoke.ps1          source and binary smoke test
+docs/                    landing page (published to gh-pages) and ARCHITECTURE.md
+licenses/                licence texts for bundled third-party binaries
+update.txt               self-update manifest read by the app
 ```
 
-## Notes
+## Documentation
 
-- Chrome for Testing builds have no Google Update, no crash-reporter service and no
-  installer — which is exactly what a portable launcher wants.
-- The optional GreenChrome / Chrome++ DLL injection still ships and is off unless you
-  enable it. On very new Chrome builds, run without injection first if the browser
-  refuses to start; the launcher works fine without it.
-- Windows Defender sometimes flags unpacked portable browser launchers. The exe is
-  unsigned, as before.
+| Document | What is in it |
+| --- | --- |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | how the resolve → download → extract → swap pipeline works |
+| [`ROADMAP.md`](ROADMAP.md) | 80-item enhancement list with priority, effort and risk |
+| [`SECURITY.md`](SECURITY.md) | how to report a vulnerability, scope, accepted risks |
+| [`PRIVACY.md`](PRIVACY.md) | exactly what is sent where — and how to check it |
+| [`licenses/`](licenses/) | terms for the bundled 7-Zip, MozLz4 and other binaries |
+
+## Known limits
+
+- **Edge, Vivaldi and Cent are not verified end to end.** Edge uses a Microsoft endpoint
+  that could not be reached from the build environment; Vivaldi and Cent have no binary
+  source in the code at all — those menu entries open a download page.
+- **GreenChrome / Chrome++ injection is untested on current Chrome.** It is off by
+  default and the launcher works without it.
+- **The executable is not Authenticode-signed** yet ([ROADMAP](ROADMAP.md) C1).
+- The UI has been compiled and structurally verified on Windows CI, but not exercised
+  by hand on a desktop.
+
+## Contributing
+
+Bug reports are welcome — please include the version from the settings dialog, your
+Windows build, the browser and channel, and the exact error text. Security issues go
+through [`SECURITY.md`](SECURITY.md), not the public issue tracker.
+
+Before opening a pull request, run `./build/build.ps1` and `./build/smoke.ps1`; CI runs
+both.
 
 ## Licence
 
-GPL-3.0. This is a derivative of [cnjackchen/my-chrome](https://github.com/cnjackchen/my-chrome),
-which is GPL-3.0. See `LICENSE` and `NOTICE`.
+GPL-3.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
 
-## Credits
+This is a derivative of [cnjackchen/my-chrome](https://github.com/cnjackchen/my-chrome)
+(GPL-3.0). The 3.8.x line was published as MyBrowser by
+[xixiranran](https://github.com/xixiranran/MyChrome), from whose 3.8.50 release the
+source in `src/` was recovered. Bundled third-party components keep their own terms —
+see [`licenses/`](licenses/).
 
-Original MyChrome / MyBrowser by [xixiranran](https://github.com/xixiranran/MyChrome).
-GreenChrome, 7-Zip, MozLz4 and MouseInc are bundled under their own licences.
+Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and Cent are downloaded from their
+vendors at runtime and are not redistributed here.

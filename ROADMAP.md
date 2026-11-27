@@ -13,6 +13,32 @@ How to read the columns:
 
 ---
 
+## Shipped so far
+
+| Item | Shipped in |
+| --- | --- |
+| A1 — archive integrity test before extraction | 3.9.3 |
+| A5 — https-only mirrors on the fallback path | 3.9.2 |
+| B1 — pre-flight check before applying (partial) | 3.9.2 |
+| B5 — temp cleanup on failure and success (partial) | 3.9.2 |
+| C2 — `SHA256SUMS.txt` per release | 3.9.3 |
+| C3 — `--no-sandbox` removed from the defaults | 3.9.3 |
+| C5 — injection off by default and labelled | 3.9.x |
+| E2 — DPI awareness | 3.9.3 |
+| H2 — build fails if the version drifts (partial) | 3.9.3 |
+| H3 — `docs/ARCHITECTURE.md` | 3.9.3 |
+| I1 — smoke test in CI (partial: sources + launch) | 3.9.3 |
+| K1 — GPL-3.0 `LICENSE` and `NOTICE` | 3.9.1 |
+| K2 — `licenses/` with third-party terms | 3.9.3 |
+
+Plus two findings that were not on the original list:
+
+- **Hardcoded Google API credentials** — an API key, an OAuth client id and a client
+  secret were compiled into the binary and written into the user's environment with
+  `setx`. Removed in 3.9.3.
+- **Unquoted `cd <dir>&cmd`** in the DLL-injection path: a folder name containing a space
+  or `&` broke it, and `&` injected a second command into `cmd.exe`. Quoted in 3.9.3.
+
 ## A. Download integrity and correctness
 
 | # | Item | Why | P | Eff | Risk |

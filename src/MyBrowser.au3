@@ -1558,7 +1558,7 @@ Func _STRINGENDSWITH ( $SINPUT , $SSEARCH , $FCASESENSITIVE = False )
 	Return False
 EndFunc
 Global $WINVERSION = _WINAPI_GETVERSION ( )
-Global Const $APPVERSION = "3.9.2"
+Global Const $APPVERSION = "3.9.3"
 Global $APPNAME = StringRegExpReplace ( @ScriptName , "\.[^.]*$" , "" )
 Global $INIFILE = @ScriptDir & "\" & $APPNAME & ".ini"
 Global $LANGUAGE = IniRead ( $INIFILE , "Settings" , "Language" , "Auto" )
@@ -1576,6 +1576,8 @@ If $CMDLINE [ 0 ] > 0 And $CMDLINE [ 1 ] = "child_thread_by" Then
 	Execute ( $CMDLINE [ 3 ] & "(" & $P & ")" )
 	Exit
 EndIf
+; Per-monitor scaling: without this the whole UI is blurry at 125% and above.
+DllCall ( "user32.dll" , "bool" , "SetProcessDPIAware" )
 $__HWND_VARS = GUICreate ( "main thread" )
 GUICtrlCreateEdit ( "" , 0 , 0 , 350 )
 Func _STARTTHREAD ( $EXE , $FUNCTION , $P1 = "" , $P2 = "" , $P3 = "" , $P4 = "" , $P5 = "" , $P6 = "" , $P7 = "" , $P8 = "" , $P9 = "" , $P10 = "" )
@@ -1773,7 +1775,7 @@ If Not FileExists ( $INIFILE ) Then
 	IniWrite ( $INIFILE , "Settings" , "UpdateProxy" , "" )
 	IniWrite ( $INIFILE , "Settings" , "UpdatePort" , "" )
 	IniWrite ( $INIFILE , "Settings" , "DownloadThreads" , 3 )
-	IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp --no-first-run --no-default-browser-check" )
+	IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 	IniWrite ( $INIFILE , "Settings" , "RunInBackground" , 1 )
 	IniWrite ( $INIFILE , "Settings" , "FirstUpdateCheck" , 1 )
 	IniWrite ( $INIFILE , "Settings" , "AppUpdate" , 1 )
@@ -2265,7 +2267,7 @@ Func MOUSEINC ( )
 	If Not FileExists ( $MOUSEINC1 ) Then FileInstall ( "MouseInc.exe" , $MOUSEINC1 , 1 )
 	If Not FileExists ( $MOUSEINC2 ) Then FileInstall ( "MouseInc.json" , $MOUSEINC2 , 1 )
 	If Not FileExists ( $MOUSEINC3 ) Then FileInstall ( "MouseInc.Settings.zip" , $MOUSEINC3 , 1 )
-	$CMD = "cd " & $CHROMEDIR & "&start /b MouseInc.exe"
+	$CMD = "cd /d """ & $CHROMEDIR & """ && start /b MouseInc.exe"
 	If Not ProcessExists ( "MouseInc.exe" ) Then Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 EndFunc
 Func MOUSE_EVENT ( $HGUI , $MSGID , $WPARAM , $LPARAM )
@@ -2344,7 +2346,7 @@ Func TABPLUS ( )
 	If Not FileExists ( $TABPLUS ) Then FileInstall ( "TabPlus.exe" , $TABPLUS , 1 )
 	$INIFILE1 = $CHROMEDIR & "\TabPlus.ini"
 	If Not FileExists ( $INIFILE1 ) Then FileInstall ( "TabPlus.ini" , $INIFILE1 , 1 )
-	$CMD = "cd " & $CHROMEDIR & "&start /b TabPlus.exe"
+	$CMD = "cd /d """ & $CHROMEDIR & """ && start /b TabPlus.exe"
 	If Not ProcessExists ( "TabPlus.exe" ) Then Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 EndFunc
 Func EDGEDOWNLOAD ( )
@@ -3514,7 +3516,7 @@ Func GUI_SETGC ( )
 				Return
 			EndIf
 			If Not FileExists ( $GREENCHROMEINI ) Then FileInstall ( "GreenChrome.ini" , $GREENCHROMEINI , 1 )
-			$CMD = "cd " & $CHROMEDIR & "&setdll /d:GreenChrome.dll " & $CHROMEEXE
+			$CMD = "cd /d """ & $CHROMEDIR & """ && setdll /d:GreenChrome.dll " & $CHROMEEXE
 			Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 			Sleep ( 1000 )
 			If FileExists ( $CHROMEDIR & "\" & $CHROMEEXE & "~" ) Then
@@ -3560,7 +3562,7 @@ Func GUI_SETGC ( )
 				MsgBox ( 64 , "MyBrowser" , $NOTFOUND & """" & $GREENCHROMEDLL & """" & $PLEASECHECK , 0 , $HSETTINGS )
 				Return
 			EndIf
-			$CMD = "cd " & $CHROMEDIR & "&setdll /r " & $CHROMEEXE
+			$CMD = "cd /d """ & $CHROMEDIR & """ && setdll /r " & $CHROMEEXE
 			Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 			Sleep ( 1000 )
 			If FileExists ( $CHROMEDIR & "\" & $CHROMEEXE & "~" ) Then
@@ -3620,7 +3622,7 @@ Func GUI_GCSETTING ( )
 			EndIf
 			Return
 		EndIf
-		$CMD = "cd " & $CHROMEDIR & "&GreenChrome.ini"
+		$CMD = "cd /d """ & $CHROMEDIR & """ && GreenChrome.ini"
 		Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 	Else
 		$MSG = MsgBox ( 64 + 4 , "MyBrowser" , $NOTFOUND & """" & $CHROMEPATH & """" & $PLEASEDOWNLOAD , 0 , $HSETTINGS )
@@ -3637,8 +3639,10 @@ Func GUI_GCAUTOSET ( )
 	EndIf
 EndFunc
 Func GUI_SETAPION ( )
-	_RUNDOS ( "setx GOOGLE_API_KEY AIzaSyCkfPOPZXDKNn8hhgu3JrA62wIgC93d44k" & "&setx GOOGLE_DEFAULT_CLIENT_ID 811574891467.apps.googleusercontent.com" & "&setx GOOGLE_DEFAULT_CLIENT_SECRET kdloedMFGdGla2P1zacGjAQh" )
-	MsgBox ( 0 , "MyBrowser" , LANG ( "GUI" , "daoru" , "导入GoogleAPI密钥成功" ) , 0 , $HSETTINGS )
+	; The upstream build shipped a Google API key, OAuth client id and client secret
+	; as literals and wrote them into the user environment with setx. Redistributing
+	; someone else's credential is not something this fork does.
+	MsgBox ( 0 , "MyBrowser" , LANG ( "GUI" , "GoogleApiRemoved" , "此版本不内置 Google API 密钥。如需使用，请自行设置环境变量 GOOGLE_API_KEY、GOOGLE_DEFAULT_CLIENT_ID 与 GOOGLE_DEFAULT_CLIENT_SECRET。" ) , 0 , $HSETTINGS )
 EndFunc
 Func GUI_SETAPINO ( )
 	_RUNDOS ( "setx GOOGLE_API_KEY no" & "&setx GOOGLE_DEFAULT_CLIENT_ID no" & "&setx GOOGLE_DEFAULT_CLIENT_SECRET no" )
@@ -4104,7 +4108,7 @@ Case Else
 		If $MOUSECLICK2CLOSETAB2 <> $MOUSECLICK2CLOSETAB3 Or $RIGHTCLICK2CLOSETAB2 <> $RIGHTCLICK2CLOSETAB3 Or $MOUSE2SWITCHTAB2 <> $MOUSE2SWITCHTAB3 Then
 			If ProcessExists ( $CHROMEEXE ) Then
 				If ProcessExists ( "TabPlus.exe" ) Then ProcessClose ( "TabPlus.exe" )
-				$CMD = "cd " & $CHROMEDIR & "&start /b TabPlus.exe"
+				$CMD = "cd /d """ & $CHROMEDIR & """ && start /b TabPlus.exe"
 				Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 			EndIf
 		EndIf
@@ -5931,6 +5935,22 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	EndIf
 	FileInstall ( "7z.exe" , $TEMPDIR & "\7z.exe" , 1 )
 	FileInstall ( "7z.dll" , $TEMPDIR & "\7z.dll" , 1 )
+	; A truncated download or an HTML error page saved as .exe fails deep inside
+	; extraction with a misleading message. Test the archive first.
+	Local $IPACKETOK = 1
+	If Not FileExists ( $CHROMEINSTALLER ) Then
+		$IPACKETOK = 0
+	ElseIf FileGetSize ( $CHROMEINSTALLER ) < 1048576 Then
+		$IPACKETOK = 0
+	ElseIf RunWait ( $TEMPDIR & "\7z.exe t """ & $CHROMEINSTALLER & """ -y" , $TEMPDIR , @SW_HIDE ) <> 0 Then
+		$IPACKETOK = 0
+	EndIf
+	If Not $IPACKETOK Then
+		MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ArchiveCorrupt" , "下载的更新包不完整或已损坏，请重试。" ) , 0 , $HSETTINGS )
+		If FileExists ( $CHROMEINSTALLER ) Then FileDelete ( $CHROMEINSTALLER )
+		DirRemove ( $TEMPDIR , 1 )
+		Return SetError ( 1 , 0 , 0 )
+	EndIf
 	RunWait ( $TEMPDIR & "\7z.exe x """ & $CHROMEINSTALLER & """ -y" , $TEMPDIR , @SW_HIDE )
 	If FileExists ( $TEMPDIR & "\Chrome-bin\" ) Then
 		$CHROMEEXE = "chrome.exe"
@@ -5949,8 +5969,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		EndIf
 		$CHROMEEXE = "chrome.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\chrome.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = RELATIVEPATH ( $CHROMEDIR & "\" & $CHROMEEXE )
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 	ElseIf FileExists ( $TEMPDIR & "\brave.exe" ) Then
@@ -5968,8 +5988,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
 		$CHROMEEXE = "brave.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\brave.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 	ElseIf FileExists ( $TEMPDIR & "\chrome.7z" ) Then
@@ -6037,8 +6057,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
 		$CHROMEEXE = "msedge.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\msedge.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp --no-first-run --no-default-browser-check" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp --no-first-run --no-default-browser-check" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 		GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
@@ -6107,8 +6127,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetState ( $HX86 , $GUI_DISABLE )
 		$CHROMEEXE = "vivaldi.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\vivaldi.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 		GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
@@ -6141,8 +6161,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			$CHROMEPATH = ".\App\" & $CHROMEEXE
 			GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 			IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\chrome.exe" )
-			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
-			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
+			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 			GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCESYS & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
 		ElseIf FileExists ( $TEMPDIR & "\Chrome-bin\brave.exe" ) Then
 			$LATEST = FileGetVersion ( $TEMPDIR & "\Chrome-bin\brave.exe" )
@@ -6159,8 +6179,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
 			$CHROMEEXE = "brave.exe"
 			IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\brave.exe" )
-			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
-			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
+			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-first-run --no-default-browser-check" )
 			$CHROMEPATH = ".\App\" & $CHROMEEXE
 			GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 			GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
@@ -6391,7 +6411,7 @@ Func APPLYUPDATE ( )
 		FileInstall ( "GreenChrome.dll" , $GREENCHROMEDLL , 1 )
 		If Not FileExists ( $SETDLL ) Then FileInstall ( "setdll.exe" , $SETDLL , 1 )
 		If Not FileExists ( $GREENCHROMEINI ) Then FileInstall ( "GreenChrome.ini" , $GREENCHROMEINI , 1 )
-		$CMD = "cd " & $CHROMEDIR & "&setdll /d:GreenChrome.dll " & $CHROMEEXE
+		$CMD = "cd /d """ & $CHROMEDIR & """ && setdll /d:GreenChrome.dll " & $CHROMEEXE
 		Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 		Sleep ( 1000 )
 		If FileExists ( $CHROMEDIR & "\" & $CHROMEEXE & "~" ) Then
@@ -6413,7 +6433,7 @@ Func APPLYUPDATE ( )
 			FileInstall ( "GreenChrome64.dll" , $GREENCHROMEDLL , 1 )
 			FileInstall ( "setdll64.exe" , $SETDLL , 1 )
 			If Not FileExists ( $GREENCHROMEINI ) Then FileInstall ( "GreenChrome.ini" , $GREENCHROMEINI , 1 )
-			$CMD = "cd " & $CHROMEDIR & "&setdll /d:GreenChrome.dll " & $CHROMEEXE
+			$CMD = "cd /d """ & $CHROMEDIR & """ && setdll /d:GreenChrome.dll " & $CHROMEEXE
 			Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 			Sleep ( 1000 )
 			If FileExists ( $CHROMEDIR & "\" & $CHROMEEXE & "~" ) Then
@@ -6443,7 +6463,7 @@ Func APPLYUPDATE ( )
 			If FileExists ( $CHROMEPLUSPLUSDLL ) Then FileDelete ( $CHROMEPLUSPLUSDLL )
 			If Not FileExists ( $SETDLL ) Then FileInstall ( "setdll64.exe" , $SETDLL , 1 )
 		EndIf
-		$CMD = "cd " & $CHROMEDIR & "&setdll /d:Chrome++.dll " & $CHROMEEXE
+		$CMD = "cd /d """ & $CHROMEDIR & """ && setdll /d:Chrome++.dll " & $CHROMEEXE
 		Run ( @ComSpec & " /c " & $CMD , "" , @SW_HIDE )
 		Sleep ( 1000 )
 		If FileExists ( $CHROMEDIR & "\" & $CHROMEEXE & "~" ) Then
