@@ -24,6 +24,7 @@ jobs:
 
       - name: Smoke test sources and binaries
         shell: pwsh
+        timeout-minutes: 10
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./build/smoke.ps1

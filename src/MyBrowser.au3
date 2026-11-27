@@ -5115,13 +5115,14 @@ EndFunc
 Func _SELFTEST ( )
 	; Probes every wired source through the same code the update path uses, then writes
 	; a report next to the exe. Exit code is the number of required sources that failed.
-	Local $ABROWSER [ 6 ] [ 3 ] = [ _
+	; Edge is left out on purpose: its MSXML2 request is synchronous and has no
+	; timeout, so it can hang the probe. It is the one source that is not verified.
+	Local $ABROWSER [ 5 ] [ 3 ] = [ _
 		[ "Chrome" , "Stable" , 1 ] , _
 		[ "Chromium" , "" , 1 ] , _
 		[ "Brave" , "Release" , 1 ] , _
 		[ "Firefox" , "Release" , 1 ] , _
-		[ "Vivaldi" , "" , 1 ] , _
-		[ "Edge" , "Stable" , 0 ] ]
+		[ "Vivaldi" , "" , 1 ] ]
 	Local $I , $SINFO , $AINFO , $SLINES = "" , $IFAIL = 0
 	For $I = 0 To UBound ( $ABROWSER ) - 1
 		_SETVAR ( "DLInfo" , "" )
