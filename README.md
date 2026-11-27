@@ -1,73 +1,64 @@
-# MyBrowser
-请访问[https://github.com/xixiranran/MyChrome/releases](https://github.com/xixiranran/MyChrome/releases)获取MyBrowser最新版下载链接
+# MyBrowser (MyChrome fork) — 3.9.0
 
-MyChrome3.8.48正式更名为MyBrowser
+Portable multi-browser launcher for Windows. Downloads a browser build, unpacks it
+into its own folder, and runs it with its own profile — no installer, no registry,
+no admin rights. Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and Cent.
 
-MyBrowser更新地址：[https://xixiranran.github.io/MyChrome/](https://xixiranran.github.io/MyChrome/)
+This fork keeps the app working with **current Chrome**. Chrome stable at the time of
+this release is 158.0.8127.88.
 
-Chrome在线下载地址：[https://xixiranran.github.io/tools/chrome/](https://xixiranran.github.io/tools/chrome/)
+- **Download:** [Releases](https://github.com/drsamonline/MyChrome/releases)
+- **Landing page:** [drsamonline.github.io/MyChrome](https://drsamonline.github.io/MyChrome/)
+- **Upstream project:** [xixiranran/MyChrome](https://github.com/xixiranran/MyChrome)
 
-Edge在线下载地址：[https://xixiranran.github.io/tools/edge/](https://xixiranran.github.io/tools/edge/)
+## What changed in 3.9.0
 
-Brave在线下载地址：[https://xixiranran.github.io/tools/brave/](https://xixiranran.github.io/tools/brave/)
+| Change | Why |
+| --- | --- |
+| Chrome now comes from the official **Chrome for Testing** feed (`last-known-good-versions-with-downloads.json`) | The old path asked Google's Omaha update service for an installer and then had to unpack it. Google now serves a 536 MB "uncompressed" installer there, and the unpack step is what kept breaking. Chrome for Testing gives a direct `chrome-win64.zip` / `chrome-win32.zip` per channel. |
+| Direct ZIP install path | The archive is extracted straight into the browser folder — no nested `chrome.7z`, no `Chrome-bin` version guessing. Roughly 170 MB instead of 536 MB per update. |
+| Omaha kept as fallback | If the Chrome for Testing feed is unreachable, the old installer path still runs. |
+| Full source published | Upstream ships binaries only. `src/MyBrowser.au3` is the complete AutoIt source, so the app can be built and maintained from this repo. |
+| Reproducible build | `build/build.ps1` plus a GitHub Actions workflow compile both architectures with AutoIt3 3.3.16.1 and package the `.7z` assets. |
+| Update endpoints point here | `update.txt` and the in-app updater now resolve to this fork. |
 
-Vivaldi在线下载地址：[https://xixiranran.github.io/tools/vivaldi/](https://xixiranran.github.io/tools/vivaldi/)
+Channels: Stable, Beta, Dev, Canary. Architectures: x64 and x86.
 
-Firefox在线下载地址：[https://xixiranran.github.io/tools/firefox/](https://xixiranran.github.io/tools/firefox/)
+## Build
 
-Cent在线下载地址：[https://xixiranran.github.io/tools/cent/](https://xixiranran.github.io/tools/cent/)
+Windows with PowerShell 7, or let GitHub Actions do it (`Actions → build → Run workflow`).
 
-2025年9月21日3.8.50
+```powershell
+./build/build.ps1
+```
 
-1.修复chrome下载解压失败的问题；
+The script downloads the AutoIt3 SDK, copies `resources/` next to the script for
+`FileInstall()`, runs `Au3Check`, compiles x64 and x86, and writes the release
+archives to `dist/`.
 
-2.多处bug修复
+Pushing a `v*` tag attaches both archives to a GitHub release.
 
-2024年9月17日3.8.49
+## Layout
 
-1.修改64位金丝雀版Edge浏览器下载链接获取方式，更加稳定
+```
+src/MyBrowser.au3      application source (AutoIt3)
+resources/             files embedded into the exe at compile time
+build/build.ps1        build and packaging
+docs/                  landing page published to gh-pages
+update.txt             self-update manifest read by the app
+```
 
-2.细节调整
+## Notes
 
-2024年5月22日3.8.48
+- Chrome for Testing builds have no Google Update, no crash-reporter service and no
+  installer — which is exactly what a portable launcher wants.
+- The optional GreenChrome / Chrome++ DLL injection still ships and is off unless you
+  enable it. On very new Chrome builds, run without injection first if the browser
+  refuses to start; the launcher works fine without it.
+- Windows Defender sometimes flags unpacked portable browser launchers. The exe is
+  unsigned, as before.
 
-1.新增支持Brave、Firefox、Vivaldi、Cent等浏览器的查询下载和解压，更名为MyBrowser
+## Credits
 
-2.支持创建对应浏览器的快捷方式
-
-3.细节调整
-
-2024年4月28日3.8.46
-
-1.修复Edge beta dev更新失败问题
-
-2.细节调整
-
-2024年2月20日3.8.45
-
-1.更新chrome++到1.7.3版本
-
-2.因chrome++不支持edge便携，恢复默认使用gc便携
-
-2023年10月29日更新3.8.44：
-
-1.修复Edge及chromium更新失败的问题;
-
-2.更新chrome++到1.6.1;
-
-3.修复chrome++和mouseinc同时使用时右键关闭标签页失效的问题;
-
-4.细节调整
-
-2023年10月26日更新3.8.43：
-
-1.新增chrome++及mouseinc，弃用GC和TabPlus（chrome++替代），减小软件体积。
-
-2.修复Edge离线安装包解压失败及注入dll失败问题;
-
-3.修复118版本chrome及Edge崩溃问题；
-
-4.修复更新浏览器后卡顿问题；
-
-5.细节调整；
-
+Original MyChrome / MyBrowser by [xixiranran](https://github.com/xixiranran/MyChrome).
+GreenChrome, 7-Zip, MozLz4 and MouseInc are bundled under their own licences.

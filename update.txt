@@ -1,6 +1,6 @@
-﻿latest=3.8.50
-url=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50.7z
-url_x64=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50_x64.7z
-update=1.修复chrome下载解压失败的问题；\n2.多处bug修复
-update_zh-TW=1.修復chrome下載解壓縮失敗的問題；\n2.多處bug修復
-update_en-US=1. Fixed an issue where Chrome download and decompression failed;\n2. Fixed multiple bugs
+latest=3.9.0
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0_x64.7z
+update=1. Chrome now comes from the official Chrome for Testing feed (Chrome 158+ supported);\n2. Faster updates: direct ZIP, no installer unpacking;\n3. Rebuilt from source, 3.9.0
+update_zh-TW=1. Chrome 改為從官方 Chrome for Testing 取得（支援 Chrome 158 以上）；\n2. 直接下載 ZIP，免解壓安裝包，更新更快；\n3. 以原始碼重新編譯，3.9.0
+update_en-US=1. Chrome is now fetched from the official Chrome for Testing feed (Chrome 158+ supported);\n2. Faster updates: direct ZIP instead of the installer;\n3. Rebuilt from source, 3.9.0
