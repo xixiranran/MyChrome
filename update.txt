@@ -1,6 +1,6 @@
-latest=3.9.0
-url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0.7z
-url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0_x64.7z
-update=1. Chrome now comes from the official Chrome for Testing feed (Chrome 158+ supported);\n2. Faster updates: direct ZIP, no installer unpacking;\n3. Rebuilt from source, 3.9.0
-update_zh-TW=1. Chrome 改為從官方 Chrome for Testing 取得（支援 Chrome 158 以上）；\n2. 直接下載 ZIP，免解壓安裝包，更新更快；\n3. 以原始碼重新編譯，3.9.0
-update_en-US=1. Chrome is now fetched from the official Chrome for Testing feed (Chrome 158+ supported);\n2. Faster updates: direct ZIP instead of the installer;\n3. Rebuilt from source, 3.9.0
+latest=3.9.1
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.1/MyBrowser_v3.9.1.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.1/MyBrowser_v3.9.1_x64.7z
+update=1. Firefox, Chromium and Brave downloads fixed;\n2. Chrome for Testing feed, direct ZIP installs;\n3. 3.9.1
+update_zh-TW=1. 修復 Firefox、Chromium、Brave 下載；\n2. Chrome 使用 Chrome for Testing，直接解壓 ZIP；\n3. 3.9.1
+update_en-US=1. Fixed Firefox, Chromium and Brave downloads;\n2. Chrome via the Chrome for Testing feed, direct ZIP installs;\n3. 3.9.1

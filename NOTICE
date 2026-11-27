@@ -1,0 +1,24 @@
+MyBrowser (this fork: drsamonline/MyChrome)
+===========================================
+
+This program is a modified version of MyChrome, originally written by
+cnjackchen (https://github.com/cnjackchen/my-chrome), which is licensed under
+the GNU General Public License, version 3.
+
+Further development of the 3.8.x line was published as MyBrowser by
+xixiranran (https://github.com/xixiranran/MyChrome), from whose 3.8.50 release
+the source in src/MyBrowser.au3 was recovered.
+
+This fork (3.9.x) is distributed under the same licence, GPL-3.0. See LICENSE.
+The complete corresponding source is in this repository.
+
+Bundled third-party components, each under its own licence:
+
+  resources/7z.exe, resources/7z.dll      7-Zip, GNU LGPL / unRAR restriction
+  resources/GreenChrome*.dll, setdll*.exe GreenChrome / Microsoft setdll
+  resources/mozlz4-*.exe                  MozLz4, MPL-2.0
+  resources/MouseInc.*, hook*.dll         MouseInc
+  resources/TabPlus.*                     TabPlus
+
+Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and Cent are downloaded at
+runtime from their vendors and are not distributed with this program.

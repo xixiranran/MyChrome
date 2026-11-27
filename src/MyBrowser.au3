@@ -1558,7 +1558,7 @@ Func _STRINGENDSWITH ( $SINPUT , $SSEARCH , $FCASESENSITIVE = False )
 	Return False
 EndFunc
 Global $WINVERSION = _WINAPI_GETVERSION ( )
-Global Const $APPVERSION = "3.9.0"
+Global Const $APPVERSION = "3.9.1"
 Global $APPNAME = StringRegExpReplace ( @ScriptName , "\.[^.]*$" , "" )
 Global $INIFILE = @ScriptDir & "\" & $APPNAME & ".ini"
 Global $LANGUAGE = IniRead ( $INIFILE , "Settings" , "Language" , "Auto" )
@@ -5079,6 +5079,73 @@ Func CANCELUPDATE ( )
 		$ISUPDATING = 0
 	EndIf
 EndFunc
+Func _ZIPBROWSERDIR ( $SDIR , $SEXE )
+	; Returns the single subfolder of $SDIR that holds $SEXE, or "" if there is none.
+	Local $H = FileFindFirstFile ( $SDIR & "\*.*" )
+	If $H = - 1 Then Return ""
+	Local $SN
+	While 1
+		$SN = FileFindNextFile ( $H )
+		If @error Then ExitLoop
+		If $SN = "." Or $SN = ".." Then ContinueLoop
+		If StringInStr ( FileGetAttrib ( $SDIR & "\" & $SN ) , "D" ) And FileExists ( $SDIR & "\" & $SN & "\" & $SEXE ) Then
+			FileClose ( $H )
+			Return $SN
+		EndIf
+	WEnd
+	FileClose ( $H )
+	Return ""
+EndFunc
+Func _MOVETEMPCONTENTS ( $SSRC , $SDST )
+	; Moves every file and folder from $SSRC into $SDST, leaving the download tools behind.
+	Local $H = FileFindFirstFile ( $SSRC & "\*.*" )
+	If $H = - 1 Then Return 0
+	Local $SN
+	While 1
+		$SN = FileFindNextFile ( $H )
+		If @error Then ExitLoop
+		If $SN = "." Or $SN = ".." Then ContinueLoop
+		If $SN = "installer.exe" Or $SN = "7z.exe" Or $SN = "7z.dll" Or $SN = "Update.ini" Then ContinueLoop
+		If StringInStr ( FileGetAttrib ( $SSRC & "\" & $SN ) , "D" ) Then
+			DirMove ( $SSRC & "\" & $SN , $SDST & "\" & $SN , 1 )
+		Else
+			FileMove ( $SSRC & "\" & $SN , $SDST & "\" & $SN , 9 )
+		EndIf
+	WEnd
+	FileClose ( $H )
+	Return 1
+EndFunc
+Func _MOZILLA_FIREFOX_VER ( $HHTTPOPEN , $CHANNEL )
+	; Official version feed for every Firefox channel. Returns "" when unreachable.
+	Local $SKEY = "LATEST_FIREFOX_VERSION"
+	If $CHANNEL = "ESR" Then $SKEY = "FIREFOX_ESR"
+	If $CHANNEL = "Beta" Then $SKEY = "LATEST_FIREFOX_DEVEL_VERSION"
+	If $CHANNEL = "Dev" Then $SKEY = "LATEST_FIREFOX_DEVEL_VERSION"
+	If $CHANNEL = "Nightly" Then $SKEY = "FIREFOX_NIGHTLY"
+	Local $HCONNECT = _WINHTTPCONNECT ( $HHTTPOPEN , "product-details.mozilla.org" )
+	If @error Then Return ""
+	Local $SBODY = _WINHTTPSIMPLESSLREQUEST ( $HCONNECT , "GET" , "/1.0/firefox_versions.json" , Default , Default , "User-Agent: MyBrowser" )
+	Local $IERR = @error
+	_WINHTTPCLOSEHANDLE ( $HCONNECT )
+	If $IERR Or $SBODY = "" Then Return ""
+	Local $AM = StringRegExp ( $SBODY , '"' & $SKEY & '"\s*:\s*"([^"]+)"' , 1 )
+	If @error Then Return ""
+	Return StringRegExpReplace ( $AM [ 0 ] , "(?i)(esr|a1|b\d+)$" , "" )
+EndFunc
+Func _BRAVE_GITHUB_LATEST ( $HHTTPOPEN , $NEED_X86 )
+	; Brave publishes portable ZIPs per release; read the newest one from the GitHub API.
+	Local $SPLAT = "x64"
+	If $NEED_X86 Then $SPLAT = "ia32"
+	Local $HCONNECT = _WINHTTPCONNECT ( $HHTTPOPEN , "api.github.com" )
+	If @error Then Return ""
+	Local $SBODY = _WINHTTPSIMPLESSLREQUEST ( $HCONNECT , "GET" , "/repos/brave/brave-browser/releases/latest" , Default , Default , "User-Agent: MyBrowser" )
+	Local $IERR = @error
+	_WINHTTPCLOSEHANDLE ( $HCONNECT )
+	If $IERR Or $SBODY = "" Then Return ""
+	Local $AM = StringRegExp ( $SBODY , '"name"\s*:\s*"(brave-v([\d.]+)-win32-' & $SPLAT & '\.zip)"' , 1 )
+	If @error Then Return ""
+	Return $AM [ 1 ] & "|https://github.com/brave/brave-browser/releases/download/v" & $AM [ 1 ] & "/" & $AM [ 0 ]
+EndFunc
 Func _CFT_GETLATEST ( $HHTTPOPEN , $CHANNEL , $NEED_X86 )
 	; Returns "version|zip_url" for the requested Chrome channel, or "" on failure.
 	Local $SCH = $CHANNEL
@@ -5155,6 +5222,10 @@ Func GET_LATEST_CHROME_VER ( $PLATFORM , $BROWSERTYPE , $CHANNEL , $X86 = 0 , $I
 		EndIf
 		_SETVAR ( "DLInfo" , "|||||" & StringFormat ( $LANGGETCHROMECHANCES , "Firefox" , $I ) )
 		$LATESTURLS = "https://download.mozilla.org/?product=" & $AP & "&" & "os=" & $OSARCH & "&" & "lang=zh-CN"
+		; The version has to be resolved separately: without it the caller treats the
+		; lookup as failed and never starts the download.
+		$LATESTVER = _MOZILLA_FIREFOX_VER ( $HHTTPOPEN , $CHANNEL )
+		If $LATESTVER = "" Then $LATESTVER = "latest"
 		_SETVAR ( "DLInfo" , $LATESTVER & "|" & $LATESTURLS & "|1|1||" & StringFormat ( $LANGUPDATEGOT , "Firefox" ) )
 	EndIf
 	If $BROWSERTYPE = "Chromium" Then
@@ -5187,7 +5258,7 @@ Func GET_LATEST_CHROME_VER ( $PLATFORM , $BROWSERTYPE , $CHANNEL , $X86 = 0 , $I
 				If StringIsDigit ( $VAR ) And $VAR > 0 Then
 					$LATESTVER = $VAR
 					If StringInStr ( $PLATFORM , "win" ) Then
-						$LATESTURLS = $HOST & "/" & $URLBASE & "/" & $OSARCH & "/" & $VAR & "/mini_installer.exe"
+						$LATESTURLS = $HOST & "/" & $URLBASE & "/" & $OSARCH & "/" & $VAR & "/chrome-win.zip"
 					ElseIf StringInStr ( $PLATFORM , "mac" ) Or StringInStr ( $PLATFORM , "linux" ) Or StringInStr ( $PLATFORM , "android" ) Then
 						$LATESTURLS = $HOST & "/" & $URLBASE & "/" & $OSARCH & "/" & $VAR & "/chrome-" & $PLATFORM & ".zip"
 					EndIf
@@ -5427,6 +5498,17 @@ Func GET_LATEST_CHROME_VER ( $PLATFORM , $BROWSERTYPE , $CHANNEL , $X86 = 0 , $I
 	EndIf
 	If $BROWSERTYPE = "Brave" Then
 		If $PLATFORM = "win" Then
+			; Brave publishes a portable ZIP per release; prefer it over the Omaha
+			; installer path, which has to be unpacked afterwards.
+			Local $BG = _BRAVE_GITHUB_LATEST ( $HHTTPOPEN , $NEED_X86 )
+			If $BG <> "" Then
+				Local $ABG = StringSplit ( $BG , "|" , 2 )
+				If UBound ( $ABG ) = 2 Then
+					_WINHTTPCLOSEHANDLE ( $HHTTPOPEN )
+					_SETVAR ( "DLInfo" , $ABG [ 0 ] & "|" & $ABG [ 1 ] & "|1|1||" & StringFormat ( $LANGUPDATEGOT , "Brave" ) )
+					Return
+				EndIf
+			EndIf
 			Switch $CHANNEL
 			Case "Release"
 				$APPID = "{AFE6A462-C574-4B8A-AF43-4CC60DF4563B}"
@@ -5841,18 +5923,41 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		$CHROMEEXE = "chrome.exe"
 		$CHROMEPATH = RELATIVEPATH ( $CHROMEDIR & "\" & $CHROMEEXE )
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
-	ElseIf FileExists ( $TEMPDIR & "\chrome-win64\chrome.exe" ) Or FileExists ( $TEMPDIR & "\chrome-win32\chrome.exe" ) Then
-		$ISCHROME = 1
-		If FileExists ( $TEMPDIR & "\chrome-win64\chrome.exe" ) Then
-			$LATEST = FileGetVersion ( $TEMPDIR & "\chrome-win64\chrome.exe" )
+	ElseIf _ZIPBROWSERDIR ( $TEMPDIR , "chrome.exe" ) <> "" Then
+		; Chrome for Testing (chrome-win64 / chrome-win32) and Chromium snapshots
+		; (chrome-win) both ship a plain ZIP with the browser in one subfolder.
+		Local $ZD = _ZIPBROWSERDIR ( $TEMPDIR , "chrome.exe" )
+		$LATEST = FileGetVersion ( $TEMPDIR & "\" & $ZD & "\chrome.exe" )
+		Local $ZCO = FileGetVersion ( $TEMPDIR & "\" & $ZD & "\chrome.exe" , "CompanyName" )
+		If StringInStr ( $ZCO , "Chromium" , 2 ) Then
+			$ISCHROMIUM = 1
 		Else
-			$LATEST = FileGetVersion ( $TEMPDIR & "\chrome-win32\chrome.exe" )
+			$ISCHROME = 1
 		EndIf
 		$CHROMEEXE = "chrome.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\chrome.exe" )
 		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
 		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
 		$CHROMEPATH = RELATIVEPATH ( $CHROMEDIR & "\" & $CHROMEEXE )
+		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
+	ElseIf FileExists ( $TEMPDIR & "\brave.exe" ) Then
+		$ISBRAVEZIP = 1
+		$LATEST = FileGetVersion ( $TEMPDIR & "\brave.exe" )
+		GUICtrlSetData ( $HBROWSERTYPE , "|Chrome|Chromium|Edge|Brave|Firefox|Vivaldi|Cent" , "Brave" )
+		IniWrite ( $INIFILE , "Settings" , "BrowserType" , "Brave" )
+		If $CHANNEL = "Release" Or $CHANNEL = "Beta" Or $CHANNEL = "Dev" Or $CHANNEL = "Nightly" Then
+			GUICtrlSetData ( $HCHANNEL , "|Release|Beta|Dev|Nightly" , $CHANNEL )
+		Else
+			GUICtrlSetData ( $HCHANNEL , "|Release|Beta|Dev|Nightly" , "Release" )
+			IniWrite ( $INIFILE , "Settings" , "Channel" , "Release" )
+		EndIf
+		GUICtrlSetState ( $HX86 , $GUI_ENABLE )
+		GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
+		$CHROMEEXE = "brave.exe"
+		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\brave.exe" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 	ElseIf FileExists ( $TEMPDIR & "\chrome.7z" ) Then
 		$CHROMEEXE = "chrome.exe"
@@ -6110,6 +6215,11 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			DirRemove ( $CHROMEDIR & "\~updated" , 1 )
 			DirMove ( $TEMPDIR & "\" & $LATEST , $CHROMEDIR & "\~updated" , 1 )
 		EndIf
+	ElseIf $ISBRAVEZIP = 1 Then
+		$BROWSERTYPE = "Brave"
+		DirRemove ( $CHROMEDIR & "\~updated" , 1 )
+		DirCreate ( $CHROMEDIR & "\~updated" )
+		_MOVETEMPCONTENTS ( $TEMPDIR , $CHROMEDIR & "\~updated" )
 	ElseIf $ISBRAVE = 1 Then
 		If Not FileExists ( $TEMPDIR & "\Chrome-bin\brave.exe" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractBraveFailed" , "提取 Brave 程序文件失败！" ) , 0 , $HSETTINGS )
@@ -6120,10 +6230,13 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			DirRemove ( $CHROMEDIR & "\~updated" , 1 )
 			DirMove ( $TEMPDIR & "\Chrome-bin\" & $LATEST , $CHROMEDIR & "\~updated" , 1 )
 		EndIf
-	ElseIf FileExists ( $TEMPDIR & "\chrome-win64\chrome.exe" ) Or FileExists ( $TEMPDIR & "\chrome-win32\chrome.exe" ) Then
-		Local $CFTDIR = "chrome-win64"
-		If Not FileExists ( $TEMPDIR & "\chrome-win64\chrome.exe" ) Then $CFTDIR = "chrome-win32"
-		$BROWSERTYPE = "Chrome"
+	ElseIf _ZIPBROWSERDIR ( $TEMPDIR , "chrome.exe" ) <> "" Then
+		Local $CFTDIR = _ZIPBROWSERDIR ( $TEMPDIR , "chrome.exe" )
+		If $ISCHROMIUM = 1 Then
+			$BROWSERTYPE = "Chromium"
+		Else
+			$BROWSERTYPE = "Chrome"
+		EndIf
 		DirRemove ( $CHROMEDIR & "\~updated" , 1 )
 		DirMove ( $TEMPDIR & "\" & $CFTDIR , $CHROMEDIR & "\~updated" , 1 )
 	Else
@@ -6150,6 +6263,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	$ISEDGE = 0
 	$ISVIVALDI = 0
 	$ISBRAVE = 0
+	$ISBRAVEZIP = 0
 	$ISFIREFOX = 0
 	$ISCENT = 0
 	$ISCENTPRO = 0

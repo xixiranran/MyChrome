@@ -1,15 +1,25 @@
-# MyBrowser (MyChrome fork) — 3.9.0
+# MyBrowser (MyChrome fork) — 3.9.1
 
 Portable multi-browser launcher for Windows. Downloads a browser build, unpacks it
 into its own folder, and runs it with its own profile — no installer, no registry,
 no admin rights. Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and Cent.
 
-This fork keeps the app working with **current Chrome**. Chrome stable at the time of
-this release is 158.0.8127.88.
+This fork keeps the app working with **current browsers**. Chrome stable at the time of
+this release is 158.0.8127.88, Chromium snapshots are at 160.0.8187.0, Brave at 1.100.59,
+Firefox at 154.0.1.
 
 - **Download:** [Releases](https://github.com/drsamonline/MyChrome/releases)
 - **Landing page:** [drsamonline.github.io/MyChrome](https://drsamonline.github.io/MyChrome/)
 - **Upstream project:** [xixiranran/MyChrome](https://github.com/xixiranran/MyChrome)
+
+## What changed in 3.9.1
+
+| Change | Why |
+| --- | --- |
+| Firefox updates resolve a version again | The version was never set, so the update check reported failure and never downloaded. The version now comes from `product-details.mozilla.org`. |
+| Chromium uses the snapshot ZIP | `chrome-win.zip` from the same snapshot instead of `mini_installer.exe`, so it installs through the same direct-ZIP path as Chrome. |
+| Brave uses the official release ZIP | `brave-v*-win32-{x64,ia32}.zip` from Brave's GitHub releases, with the Omaha path kept as a fallback. |
+| Licence corrected | The upstream project is GPL-3.0; `LICENSE` and `NOTICE` now ship with the source. |
 
 ## What changed in 3.9.0
 
@@ -57,6 +67,11 @@ update.txt             self-update manifest read by the app
   refuses to start; the launcher works fine without it.
 - Windows Defender sometimes flags unpacked portable browser launchers. The exe is
   unsigned, as before.
+
+## Licence
+
+GPL-3.0. This is a derivative of [cnjackchen/my-chrome](https://github.com/cnjackchen/my-chrome),
+which is GPL-3.0. See `LICENSE` and `NOTICE`.
 
 ## Credits
 
