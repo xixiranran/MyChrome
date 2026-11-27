@@ -5113,18 +5113,15 @@ Func _HASPARAM ( $SFLAG )
 	Return 0
 EndFunc
 Func _SELFTEST ( )
-	; Probes every wired source through the same code the update path uses, then writes
-	; a report next to the exe. Exit code is the number of required sources that failed.
-	; Edge is left out on purpose: its MSXML2 request is synchronous and has no
-	; timeout, so it can hang the probe. It is the one source that is not verified.
+	; Probes each wired source in a child process, exactly as the updater does, and kills
+	; it after 20 s. An in-process probe can block forever; a child cannot.
 	Local $ABROWSER [ 5 ] [ 3 ] = [ _
 		[ "Chrome" , "Stable" , 1 ] , _
 		[ "Chromium" , "" , 1 ] , _
 		[ "Brave" , "Release" , 1 ] , _
 		[ "Firefox" , "Release" , 1 ] , _
 		[ "Vivaldi" , "" , 1 ] ]
-	Local $I , $SINFO , $AINFO , $SLINES = "" , $IFAIL = 0
-	; Written after every probe, so a hung source still leaves evidence behind.
+	Local $I , $SINFO , $AINFO , $SLINES = "" , $IFAIL = 0 , $IPID , $ITICKS
 	Local $HREP = FileOpen ( @ScriptDir & "\MyBrowser.selftest.txt" , 2 )
 	For $I = 0 To UBound ( $ABROWSER ) - 1
 		If $HREP <> - 1 Then
@@ -5132,10 +5129,24 @@ Func _SELFTEST ( )
 			FileFlush ( $HREP )
 		EndIf
 		_SETVAR ( "DLInfo" , "" )
-		GET_LATEST_CHROME_VER ( "win" , $ABROWSER [ $I ] [ 0 ] , $ABROWSER [ $I ] [ 1 ] , 0 , "MyBrowser.ini" )
-		$SINFO = _GETVAR ( "DLInfo" )
+		$IPID = _STARTTHREAD ( @ScriptFullPath , "GET_LATEST_CHROME_VER" , "win" , $ABROWSER [ $I ] [ 0 ] , $ABROWSER [ $I ] [ 1 ] , 0 , "MyBrowser.ini" )
+		$ITICKS = 0
+		While 1
+			Sleep ( 200 )
+			$SINFO = _GETVAR ( "DLInfo" )
+			$AINFO = StringSplit ( $SINFO , "|" , 2 )
+			If UBound ( $AINFO ) >= 3 And $AINFO [ 2 ] = "1" Then ExitLoop
+			If Not ProcessExists ( $IPID ) Then ExitLoop
+			$ITICKS += 1
+			If $ITICKS > 100 Then
+				_KILLTHREAD ( $IPID )
+				$SINFO = "|||||timeout after 20s"
+				ExitLoop
+			EndIf
+		WEnd
+		If ProcessExists ( $IPID ) Then _KILLTHREAD ( $IPID )
 		$AINFO = StringSplit ( $SINFO , "|" , 2 )
-		If UBound ( $AINFO ) >= 2 And $AINFO [ 0 ] <> "" Then
+		If UBound ( $AINFO ) >= 3 And $AINFO [ 0 ] <> "" Then
 			$SLINES &= "PASS  " & $ABROWSER [ $I ] [ 0 ] & "  " & $AINFO [ 0 ] & "  " & StringLeft ( $AINFO [ 1 ] , 90 ) & @CRLF
 		ElseIf $ABROWSER [ $I ] [ 2 ] = 1 Then
 			$IFAIL += 1
@@ -5148,7 +5159,6 @@ Func _SELFTEST ( )
 		FileWrite ( $HREP , $SLINES )
 		FileClose ( $HREP )
 	EndIf
-	Return $IFAIL
 	Return $IFAIL
 EndFunc
 Func _LOG ( $SMSG )
