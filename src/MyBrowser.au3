@@ -5492,7 +5492,8 @@ Func GET_LATEST_CHROME_VER ( $PLATFORM , $BROWSERTYPE , $CHANNEL , $X86 = 0 , $I
 		If Not $ERROR Then
 			$VERSION = $MATCH [ 0 ]
 			$NAME = $MATCH [ 1 ]
-			$MATCH = StringRegExp ( $VAR , "(?i)<url +codebase=""(.+?)""" , 3 )
+			; https only: the manifest also lists plain-http mirrors, and they used to be tried first.
+			$MATCH = StringRegExp ( $VAR , "(?i)<url +codebase=""(https://.+?)""" , 3 )
 			If Not @error Then
 				For $I = 0 To UBound ( $MATCH ) - 1
 					$LATESTURLS &= " " & $MATCH [ $I ] & $NAME
