@@ -5200,18 +5200,15 @@ Func _MOVETEMPCONTENTS ( $SSRC , $SDST )
 	Return 1
 EndFunc
 Func _MOZILLA_FIREFOX_VER ( $HHTTPOPEN , $CHANNEL )
-	; Official version feed for every Firefox channel. Returns "" when unreachable.
+	; InetRead, not the inlined WinHTTP UDF: Mozilla answers with chunked encoding and the
+	; bundled reader never returns on it. This call used to hang the version lookup.
 	Local $SKEY = "LATEST_FIREFOX_VERSION"
 	If $CHANNEL = "ESR" Then $SKEY = "FIREFOX_ESR"
 	If $CHANNEL = "Beta" Then $SKEY = "LATEST_FIREFOX_DEVEL_VERSION"
 	If $CHANNEL = "Dev" Then $SKEY = "LATEST_FIREFOX_DEVEL_VERSION"
 	If $CHANNEL = "Nightly" Then $SKEY = "FIREFOX_NIGHTLY"
-	Local $HCONNECT = _WINHTTPCONNECT ( $HHTTPOPEN , "product-details.mozilla.org" )
-	If @error Then Return ""
-	Local $SBODY = _WINHTTPSIMPLESSLREQUEST ( $HCONNECT , "GET" , "/1.0/firefox_versions.json" , Default , Default , "User-Agent: MyBrowser" )
-	Local $IERR = @error
-	_WINHTTPCLOSEHANDLE ( $HCONNECT )
-	If $IERR Or $SBODY = "" Then Return ""
+	Local $SBODY = BinaryToString ( InetRead ( "https://product-details.mozilla.org/1.0/firefox_versions.json" , 1 ) , 4 )
+	If $SBODY = "" Then Return ""
 	Local $AM = StringRegExp ( $SBODY , '"' & $SKEY & '"\s*:\s*"([^"]+)"' , 1 )
 	If @error Then Return ""
 	Return StringRegExpReplace ( $AM [ 0 ] , "(?i)(esr|a1|b\d+)$" , "" )
