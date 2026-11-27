@@ -2841,7 +2841,7 @@ Func CHECKAPPUPDATE ( )
 	Else
 		HttpSetProxy ( 2 , $PROXYSEVER & ":" & $PROXYPORT )
 	EndIf
-	$UPDATEINFO = BinaryToString ( InetRead ( "https://drsamonline.github.io/MyChrome/update.txt" , 27 ) , 4 )
+	$UPDATEINFO = BinaryToString ( InetRead ( "https://raw.githubusercontent.com/drsamonline/MyChrome/master/update.txt" , 27 ) , 4 )
 	$UPDATEINFO = StringStripWS ( $UPDATEINFO , 3 )
 	$LANGUPDATETIPS = LANG ( "AppUpdate" , "UpdateTips" , "%s 可以更新，是否立即下载？\n\n您的版本： %s，最新版本： %s\n\n%s" )
 	$LANGUPDATED = LANG ( "AppUpdate" , "Updated" , "%s 已更新至 %s !" )
