@@ -1558,13 +1558,13 @@ Func _STRINGENDSWITH ( $SINPUT , $SSEARCH , $FCASESENSITIVE = False )
 	Return False
 EndFunc
 Global $WINVERSION = _WINAPI_GETVERSION ( )
-Global Const $APPVERSION = "3.9.1"
+Global Const $APPVERSION = "3.9.2"
 Global $APPNAME = StringRegExpReplace ( @ScriptName , "\.[^.]*$" , "" )
 Global $INIFILE = @ScriptDir & "\" & $APPNAME & ".ini"
 Global $LANGUAGE = IniRead ( $INIFILE , "Settings" , "Language" , "Auto" )
 Global $LANGFILE = LANGCHECK ( )
 Global $PROXYTYPE , $PROXYSEVER , $PROXYPORT
-Global $USERAGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 Chrome/56.0.2924.87 Safari/537.36"
+Global $USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36"
 Global $__HWND_VARS
 If $CMDLINE [ 0 ] > 0 And $CMDLINE [ 1 ] = "child_thread_by" Then
 	$__HWND_VARS = HWnd ( $CMDLINE [ 2 ] )
@@ -1773,7 +1773,7 @@ If Not FileExists ( $INIFILE ) Then
 	IniWrite ( $INIFILE , "Settings" , "UpdateProxy" , "" )
 	IniWrite ( $INIFILE , "Settings" , "UpdatePort" , "" )
 	IniWrite ( $INIFILE , "Settings" , "DownloadThreads" , 3 )
-	IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp" )
+	IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp --no-first-run --no-default-browser-check" )
 	IniWrite ( $INIFILE , "Settings" , "RunInBackground" , 1 )
 	IniWrite ( $INIFILE , "Settings" , "FirstUpdateCheck" , 1 )
 	IniWrite ( $INIFILE , "Settings" , "AppUpdate" , 1 )
@@ -4976,6 +4976,14 @@ Func UPDATECHROME ( $CHROMEPATH , $CHANNEL , $STRURL = "" )
 			EndIf
 		EndIf
 	EndIf
+	; A Chrome update needs roughly 1.5 GB free while the old build is still there.
+	Local $SFREEMB = DriveSpaceFree ( $CHROMEDIR )
+	If $SFREEMB > 0 And $SFREEMB < 2048 Then
+		If MsgBox ( 64 + 4 , "MyBrowser" , LANG ( "Update" , "LowDiskSpace" , "可用磁盘空间不足 2GB，更新可能失败。是否继续？" ) , 0 , $HSETTINGS ) <> 6 Then
+			ENDUPDATE ( )
+			Return
+		EndIf
+	EndIf
 	Local $UPDATED , $URLS , $ICANCEL
 	Local $LANGDOWNLOADINGCHROME = LANG ( "Update" , "DownloadingChrome" , "下载中" )
 	$ISUPDATING = $LATESTCHROMEURLS
@@ -5394,7 +5402,11 @@ Func GET_LATEST_CHROME_VER ( $PLATFORM , $BROWSERTYPE , $CHANNEL , $X86 = 0 , $I
 		If $PLATFORM = "win" Then
 			; Chrome for Testing is the primary source: official JSON API, direct ZIP,
 			; no installer unpacking and no dependency on the Omaha update service.
-			Local $CFT = _CFT_GETLATEST ( $HHTTPOPEN , $CHANNEL , $NEED_X86 )
+			Local $CFT = ""
+			For $CFTI = 1 To 3
+				$CFT = _CFT_GETLATEST ( $HHTTPOPEN , $CHANNEL , $NEED_X86 )
+				If $CFT <> "" Then ExitLoop
+			Next
 			If $CFT <> "" Then
 				Local $ACFT = StringSplit ( $CFT , "|" , 2 )
 				If UBound ( $ACFT ) = 2 Then
@@ -5936,8 +5948,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		EndIf
 		$CHROMEEXE = "chrome.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\chrome.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = RELATIVEPATH ( $CHROMEDIR & "\" & $CHROMEEXE )
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 	ElseIf FileExists ( $TEMPDIR & "\brave.exe" ) Then
@@ -5955,8 +5967,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
 		$CHROMEEXE = "brave.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\brave.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 	ElseIf FileExists ( $TEMPDIR & "\chrome.7z" ) Then
@@ -5991,6 +6003,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 	Else
 		MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "NotAdapted" , "未适配该程序，请手动解压安装！" ) , 0 , $HSETTINGS )
+		DirRemove ( $TEMPDIR , 1 )
 		Return SetError ( 1 , 0 , 0 )
 	EndIf
 	If $ISEDGE = 1 Then
@@ -6008,6 +6021,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		FileClose ( $SEARCH )
 		If $LATEST = "" Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "NotAdapted" , "未适配该程序，请手动解压安装！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		EndIf
 		GUICtrlSetData ( $HBROWSERTYPE , "|Chrome|Chromium|Edge|Brave|Firefox|Vivaldi|Cent" , "Edge" )
@@ -6022,8 +6036,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
 		$CHROMEEXE = "msedge.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\msedge.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --force-local-ntp --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 		GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
@@ -6092,8 +6106,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		GUICtrlSetState ( $HX86 , $GUI_DISABLE )
 		$CHROMEEXE = "vivaldi.exe"
 		IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\vivaldi.exe" )
-		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
-		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+		IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+		GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
 		$CHROMEPATH = ".\App\" & $CHROMEEXE
 		GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 		GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
@@ -6126,8 +6140,8 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			$CHROMEPATH = ".\App\" & $CHROMEEXE
 			GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 			IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\chrome.exe" )
-			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
-			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
 			GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCESYS & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
 		ElseIf FileExists ( $TEMPDIR & "\Chrome-bin\brave.exe" ) Then
 			$LATEST = FileGetVersion ( $TEMPDIR & "\Chrome-bin\brave.exe" )
@@ -6144,13 +6158,14 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			GUICtrlSetState ( $HCHANNEL , $GUI_ENABLE )
 			$CHROMEEXE = "brave.exe"
 			IniWrite ( $INIFILE , "Settings" , "ChromePath" , ".\App\brave.exe" )
-			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
-			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox" )
+			IniWrite ( $INIFILE , "Settings" , "Params" , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
+			GUICtrlSetData ( $HPARAMS , "--with-greenchrome --disable-features=RendererCodeIntegrity --test-type --no-sandbox --no-first-run --no-default-browser-check" )
 			$CHROMEPATH = ".\App\" & $CHROMEEXE
 			GUICtrlSetData ( $HCHROMEPATH , $CHROMEPATH )
 			GUICtrlSetData ( $HCHROMESOURCE , "|" & $GUANFANG & "|" & $LANGCHROMESOURCEINSTALLER , $CHROMESOURCE )
 		Else
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "NotAdapted" , "未适配该程序，请手动解压安装！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		EndIf
 	EndIf
@@ -6170,6 +6185,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	If $ISEDGE = 1 Then
 		If Not FileExists ( $TEMPDIR & "\Chrome-bin\" & $LATEST & "\msedge.exe" ) Or Not FileExists ( $TEMPDIR & "\Chrome-bin\" & $LATEST & "\msedge.dll" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractEdgeFailed" , "提取 MicroSoft Edge 程序文件失败！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			$BROWSERTYPE = "Edge"
@@ -6179,6 +6195,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	ElseIf $ISVIVALDI = 1 Then
 		If Not FileExists ( $TEMPDIR & "\Vivaldi-bin\vivaldi.exe" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractVivaldiFailed" , "提取 Vivaldi 程序文件失败！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			$BROWSERTYPE = "Vivaldi"
@@ -6189,6 +6206,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	ElseIf $ISFIREFOX = 1 Then
 		If Not FileExists ( $TEMPDIR & "\core\firefox.exe" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractFirefoxFailed" , "提取 Firefox 程序文件失败！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			$BROWSERTYPE = "Firefox"
@@ -6198,6 +6216,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	ElseIf $ISCENT = 1 Then
 		If Not FileExists ( $TEMPDIR & "\Chrome-bin\safemode.bat" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractCentFailed" , "提取 Cent 程序文件失败！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			$BROWSERTYPE = "Cent"
@@ -6208,6 +6227,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	ElseIf $ISCENTPRO = 1 Then
 		If Not FileExists ( $TEMPDIR & "\safemode.bat" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractCentFailed" , "提取 Cent 程序文件失败！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			$BROWSERTYPE = "Cent"
@@ -6223,6 +6243,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	ElseIf $ISBRAVE = 1 Then
 		If Not FileExists ( $TEMPDIR & "\Chrome-bin\brave.exe" ) Then
 			MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractBraveFailed" , "提取 Brave 程序文件失败！" ) , 0 , $HSETTINGS )
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			$BROWSERTYPE = "Brave"
@@ -6246,6 +6267,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 			ElseIf $ISCHROMIUM = 1 Then
 				MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ExtractChromiumFailed" , "提取 Chromium 程序文件失败！" ) , 0 , $HSETTINGS )
 			EndIf
+			DirRemove ( $TEMPDIR , 1 )
 			Return SetError ( 1 , 0 , 0 )
 		Else
 			If $ISCHROME = 1 Then
@@ -6273,6 +6295,18 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	Return APPLYUPDATE ( )
 EndFunc
 Func APPLYUPDATE ( )
+	; Never copy a half-extracted tree over a working browser.
+	Local $SAPPLYOK = FileExists ( $CHROMEDIR & "\~updated" )
+	If $SAPPLYOK And $CHROMEEXE <> "" Then
+		$SAPPLYOK = FileExists ( $CHROMEDIR & "\~updated\" & $CHROMEEXE )
+	EndIf
+	If Not $SAPPLYOK Then
+		MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ApplyIncomplete" , "更新文件不完整，已取消本次更新，原浏览器未受影响。" ) , 0 , $HSETTINGS )
+		If FileExists ( $CHROMEDIR & "\~updated" ) Then DirRemove ( $CHROMEDIR & "\~updated" , 1 )
+		If FileExists ( $CHROMEDIR & "\~update" ) Then DirRemove ( $CHROMEDIR & "\~update" , 1 )
+		ENDUPDATE ( )
+		Return ""
+	EndIf
 	$LANGAPPLYUPDATE = LANG ( "Update" , "ApplyUpdate" , "正在应用浏览器更新" )
 	If IsHWnd ( $HSETTINGS ) Then
 		_GUICTRLSTATUSBAR_SETTEXT ( $HSTAUSBAR , $LANGAPPLYUPDATE & " ..." )
@@ -6345,6 +6379,7 @@ Func APPLYUPDATE ( )
 		MsgBox ( 64 , "MyBrowser" , StringFormat ( $LANGUPDATEDTO , $CHROMEFILEVERSION ) , 0 , $HSETTINGS )
 	EndIf
 	DirRemove ( $CHROMEDIR & "\~updated" , 1 )
+	If FileExists ( $CHROMEDIR & "\~update" ) Then DirRemove ( $CHROMEDIR & "\~update" , 1 )
 	If FileExists ( $CHROMEDIR & "\7z.exe" ) Then FileDelete ( $CHROMEDIR & "\7z.exe" )
 	If FileExists ( $CHROMEDIR & "\7z.dll" ) Then FileDelete ( $CHROMEDIR & "\7z.dll" )
 	If IniRead ( $INIFILE , "Settings" , "GreenChromeAuto" , "" ) = 1 Then

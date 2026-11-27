@@ -1,4 +1,4 @@
-# MyBrowser (MyChrome fork) — 3.9.1
+# MyBrowser (MyChrome fork) — 3.9.2
 
 Portable multi-browser launcher for Windows. Downloads a browser build, unpacks it
 into its own folder, and runs it with its own profile — no installer, no registry,
@@ -11,6 +11,17 @@ Firefox at 154.0.1.
 - **Download:** [Releases](https://github.com/drsamonline/MyChrome/releases)
 - **Landing page:** [drsamonline.github.io/MyChrome](https://drsamonline.github.io/MyChrome/)
 - **Upstream project:** [xixiranran/MyChrome](https://github.com/xixiranran/MyChrome)
+
+## What changed in 3.9.2
+
+| Change | Why |
+| --- | --- |
+| Disk-space check before an update | Chrome needs roughly 1.5 GB free while the old build is still in place. Below 2 GB the app now asks first instead of failing halfway. |
+| Temp files cleaned up | A failed extraction left the downloaded installer behind; `~update` is now removed on failure and after a successful apply. |
+| Incomplete updates are refused | The extract step is verified before anything is copied over the working browser. |
+| Portable launch flags | `--no-first-run --no-default-browser-check` added, so a fresh profile skips the welcome flow and the default-browser prompt. |
+| Modern User-Agent | Requests no longer announce Chrome 56, which some CDNs reject. |
+| Retried lookups | The Chrome for Testing lookup retries three times before falling back to the installer path. |
 
 ## What changed in 3.9.1
 

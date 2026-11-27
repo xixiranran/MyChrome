@@ -1,6 +1,6 @@
-latest=3.9.1
-url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.1/MyBrowser_v3.9.1.7z
-url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.1/MyBrowser_v3.9.1_x64.7z
-update=1. Firefox, Chromium and Brave downloads fixed;\n2. Chrome for Testing feed, direct ZIP installs;\n3. 3.9.1
-update_zh-TW=1. 修復 Firefox、Chromium、Brave 下載；\n2. Chrome 使用 Chrome for Testing，直接解壓 ZIP；\n3. 3.9.1
-update_en-US=1. Fixed Firefox, Chromium and Brave downloads;\n2. Chrome via the Chrome for Testing feed, direct ZIP installs;\n3. 3.9.1
+latest=3.9.2
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.2/MyBrowser_v3.9.2.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.2/MyBrowser_v3.9.2_x64.7z
+update=1. 更新前检查磁盘空间，失败时清理临时文件；\n2. 启动参数加入 --no-first-run --no-default-browser-check；\n3. 更新包不完整时不再覆盖可用浏览器；\n4. 3.9.2
+update_zh-TW=1. 更新前檢查磁碟空間，失敗時清理暫存檔；\n2. 啟動參數加入 --no-first-run --no-default-browser-check；\n3. 更新檔不完整時不再覆蓋可用瀏覽器；\n4. 3.9.2
+update_en-US=1. Free-space check before updating, temp files cleaned up on failure;\n2. --no-first-run and --no-default-browser-check added to launch flags;\n3. An incomplete download can no longer overwrite a working browser;\n4. 3.9.2
