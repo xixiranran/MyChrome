@@ -1,6 +1,6 @@
-﻿latest=3.8.50
-url=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50.7z
-url_x64=https://github.com/xixiranran/MyChrome/releases/download/3.8.50/MyBrowser_v3.8.50_x64.7z
-update=1.修复chrome下载解压失败的问题；\n2.多处bug修复
-update_zh-TW=1.修復chrome下載解壓縮失敗的問題；\n2.多處bug修復
-update_en-US=1. Fixed an issue where Chrome download and decompression failed;\n2. Fixed multiple bugs
+latest=3.9.6
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.6/MyBrowser_v3.9.6.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.6/MyBrowser_v3.9.6_x64.7z
+update=1. 更新改為原子替換，失敗可自動回滾；\n2. 新增 /selftest 自我檢測；\n3. 3.9.6
+update_zh-TW=1. 更新改為原子替換，失敗可自動回復；\n2. 新增 /selftest 自我檢測；\n3. 3.9.6
+update_en-US=1. Updates swap the folder atomically and roll back on failure;\n2. New /selftest self-check;\n3. 3.9.6

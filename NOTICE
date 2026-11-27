@@ -1,0 +1,49 @@
+MyBrowser
+=========
+
+A portable browser launcher for Windows, maintained by Dr Sohil Momin
+(https://github.com/drsamonline/MyChrome). This repository is the project's home:
+source, build, tests, releases and landing page all live here, and nothing is fetched
+from another repository at build time.
+
+Licence: GNU General Public License, version 3. See LICENSE.
+
+Where the code came from
+------------------------
+
+The launcher is derived from MyChrome by cnjackchen
+(https://github.com/cnjackchen/my-chrome), which is licensed GPL-3.0. That project is
+the origin of the AutoIt design: the update-check pipeline, the portable folder layout
+and the settings model.
+
+The 3.8.x line was published as MyBrowser by xixiranran
+(https://github.com/xixiranran/MyChrome) as compiled binaries only — no source was
+published there. The source in src/ was recovered from that 3.8.50 release, then
+modernised here from 3.9.0 onward.
+
+Both are GPL-3.0, so this derivative is GPL-3.0. The complete corresponding source for
+every release is in this repository and attached to each release as a _source.7z archive.
+
+Changes made here since 3.9.0
+-----------------------------
+
+Chrome now resolves through Chrome for Testing with a direct ZIP install; Firefox,
+Chromium, Brave and Vivaldi download sources were repaired or added; the update engine
+gained integrity checks, temp cleanup, a skip-this-version option and a support log;
+hardcoded Google API credentials were removed; --no-sandbox was dropped from the
+defaults; command injection in the DLL-injection path was fixed.
+
+Bundled third-party components
+------------------------------
+
+Each keeps its own licence; see licenses/ for texts where they are redistributable.
+
+  7z.exe, 7z.dll                       7-Zip, GNU LGPL with the unRAR restriction
+  GreenChrome*.dll, setdll*.exe        GreenChrome / Microsoft setdll
+  mozlz4-win*.exe                      MozLz4, MPL-2.0
+  MouseInc.*, hook*.dll                MouseInc
+  TabPlus.*                            TabPlus
+
+Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and every other browser named in this
+repository are downloaded from their vendors at runtime and are not redistributed here.
+No vendor logo or trademark is used to imply endorsement.

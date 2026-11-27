@@ -1,0 +1,10 @@
+dist/
+.build/
+# resources are copied next to the script at build time
+src/*.exe
+src/*.dll
+src/*.ini
+src/*.zip
+src/*.json
+*.7z
+SHA256SUMS.txt

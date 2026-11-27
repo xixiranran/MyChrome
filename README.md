@@ -1,73 +1,208 @@
+<div align="center">
+
 # MyBrowser
-请访问[https://github.com/xixiranran/MyChrome/releases](https://github.com/xixiranran/MyChrome/releases)获取MyBrowser最新版下载链接
 
-MyChrome3.8.48正式更名为MyBrowser
+**Portable browser launcher for Windows.** Downloads a browser, unpacks it beside the
+executable and runs it with its own profile. No installer, no registry, no admin rights —
+delete the folder to uninstall.
 
-MyBrowser更新地址：[https://xixiranran.github.io/MyChrome/](https://xixiranran.github.io/MyChrome/)
+[![Release](https://img.shields.io/github/v/release/drsamonline/MyChrome?style=flat-square&label=release&color=e04b12)](https://github.com/drsamonline/MyChrome/releases)
+[![Downloads](https://img.shields.io/github/downloads/drsamonline/MyChrome/total?style=flat-square&color=e04b12)](https://github.com/drsamonline/MyChrome/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/drsamonline/MyChrome/build.yml?style=flat-square&label=build)](https://github.com/drsamonline/MyChrome/actions/workflows/build.yml)
+[![License](https://img.shields.io/github/license/drsamonline/MyChrome?style=flat-square&color=e04b12)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6?style=flat-square)](#requirements)
 
-Chrome在线下载地址：[https://xixiranran.github.io/tools/chrome/](https://xixiranran.github.io/tools/chrome/)
+[![Chrome](https://img.shields.io/badge/Chrome%20for%20Testing-158.0.8127.88-4285F4?style=flat-square)](https://googlechromelabs.github.io/chrome-for-testing/)
+[![AutoIt](https://img.shields.io/badge/AutoIt-3.3.16.1-1B6B93?style=flat-square)](https://www.autoitscript.com/)
+[![Landing page](https://img.shields.io/badge/landing%20page-drsamonline.github.io-e04b12?style=flat-square)](https://drsamonline.github.io/MyChrome/)
 
-Edge在线下载地址：[https://xixiranran.github.io/tools/edge/](https://xixiranran.github.io/tools/edge/)
+**[Download](https://github.com/drsamonline/MyChrome/releases/latest)** ·
+[Landing page](https://drsamonline.github.io/MyChrome/) ·
+[What changed](https://github.com/drsamonline/MyChrome/releases) ·
+[Roadmap](ROADMAP.md) ·
+[Architecture](docs/ARCHITECTURE.md)
 
-Brave在线下载地址：[https://xixiranran.github.io/tools/brave/](https://xixiranran.github.io/tools/brave/)
+</div>
 
-Vivaldi在线下载地址：[https://xixiranran.github.io/tools/vivaldi/](https://xixiranran.github.io/tools/vivaldi/)
+---
 
-Firefox在线下载地址：[https://xixiranran.github.io/tools/firefox/](https://xixiranran.github.io/tools/firefox/)
+## Download
 
-Cent在线下载地址：[https://xixiranran.github.io/tools/cent/](https://xixiranran.github.io/tools/cent/)
+| Build | File | Notes |
+| --- | --- | --- |
+| **x64** (recommended) | [`MyBrowser_v3.9.6_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
+| x86 | [`MyBrowser_v3.9.6.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
+| Source | `MyBrowser_v3.9.6_source.7z` | source, resources, build scripts |
 
-2025年9月21日3.8.50
+Unzip, run `MyBrowser.exe`, pick a browser and channel. Each release publishes
+`SHA256SUMS.txt`; verify with `certutil -hashfile <file> SHA256`.
 
-1.修复chrome下载解压失败的问题；
+The executable is unsigned, so Windows may warn on first run.
 
-2.多处bug修复
+## What it does
 
-2024年9月17日3.8.49
+```
+resolve the current build  →  download it  →  extract it beside the exe  →  run it
+```
 
-1.修改64位金丝雀版Edge浏览器下载链接获取方式，更加稳定
+It asks the vendor's own feed what the current build is, downloads it in segments with
+resume, extracts it into `App\`, and starts it with a profile folder of your choosing.
+Nothing touches the registry, and no elevation is needed.
 
-2.细节调整
+## Browsers
 
-2024年5月22日3.8.48
+Fourteen browsers, in three honest tiers. "Wired" means the launcher resolves a version
+from the vendor's own feed and installs the build itself.
 
-1.新增支持Brave、Firefox、Vivaldi、Cent等浏览器的查询下载和解压，更名为MyBrowser
+| Browser | Engine | Status | Source used |
+| --- | --- | --- | --- |
+| **Chrome** | Chromium | ✅ Wired — verified | Chrome for Testing (Stable / Beta / Dev / Canary) |
+| **Chromium** | Chromium | ✅ Wired — verified | `chromium-browser-snapshots` (`chrome-win.zip`) |
+| **Brave** | Chromium | ✅ Wired — verified | Official release ZIP, GitHub |
+| **Firefox** | Gecko | ✅ Wired — verified | Mozilla release feed (Release / ESR / Beta / Dev / Nightly) |
+| **Vivaldi** | Chromium | ✅ Wired — verified (3.9.5) | Sparkle appcast, x64 and x86 |
+| **Edge** | Chromium | ⚠️ Wired — unverified | Microsoft CDP API |
+| **Cent Browser** | Chromium | ⚠️ Wired — unverified | Vendor download page |
+| **ungoogled-chromium** | Chromium | 🔜 Not wired — archive inspected | GitHub release ZIP, `chrome.exe` in one folder |
+| **Supermium** | Chromium (Win 7+) | 🔜 Not wired — archive inspected | GitHub release ZIP, flat `chrome.exe` |
+| **Thorium** | Chromium | 🔜 Not wired | GitHub releases, Windows ZIP |
+| **LibreWolf** | Gecko | 🔜 Not wired | Installer only |
+| **Floorp** | Gecko | 🔜 Not wired | Installer only |
+| **Waterfox** | Gecko | 🔜 Not wired | Installer only |
+| **Opera / Opera GX** | Chromium | ❌ No portable build | Installer only, no portable ZIP published |
+| **Yandex Browser** | Chromium | ❌ No portable build | Installer only |
+| **Naver Whale** | Chromium | ❌ No portable build | Installer only |
+| **Pale Moon / Basilisk** | Goanna | ❌ Not supported | Own packaging, not Chromium or Firefox shaped |
 
-2.支持创建对应浏览器的快捷方式
+Legend: ✅ wired and checked against the live feed · ⚠️ wired, source could not be verified
+from the build environment · 🔜 archive layout confirmed, wiring is open work
+([ROADMAP](ROADMAP.md) G2) · ❌ no portable artifact to download.
 
-3.细节调整
+Adding a browser is not just a URL: each one needs a source function, an archive-shape
+branch in `INSTALLCHROME()` and a settings branch. The roadmap tracks the ones whose
+archives are already confirmed.
 
-2024年4月28日3.8.46
+## Requirements
 
-1.修复Edge beta dev更新失败问题
+- Windows 10 or Windows 11 (x64 or x86)
+- ~1.5 GB free disk space per browser while updating
+- No runtime, no .NET, no Visual C++ redistributable — the executable is self-contained
 
-2.细节调整
+## What's new in 3.9.6
 
-2024年2月20日3.8.45
+- **Atomic folder swap with rollback.** An update now renames `App\~updated` into place
+  in three steps instead of copying over the live folder, and verifies the build that
+  actually landed. A mismatch puts the previous build back. It falls back to the old
+  copy path when the profile or the launcher lives inside the browser folder.
+- **`/selftest`.** `MyBrowser.exe /selftest` probes every wired source through the same
+  code the updater uses, writes `MyBrowser.selftest.txt` and exits with the number of
+  failures. CI now runs it, so the app's own resolvers are tested instead of a
+  PowerShell copy of them.
+- Repo docs and the roadmap status board refreshed.
 
-1.更新chrome++到1.7.3版本
+Earlier: **3.9.5** made Vivaldi download for real, added the 17-browser matrix and the
+support block. **3.9.4** fixed "No" disabling update checks permanently and added
+`MyBrowser.log`. **3.9.3** removed hardcoded Google API credentials and dropped
+`--no-sandbox` from the defaults.
 
-2.因chrome++不支持edge便携，恢复默认使用gc便携
+Full history: [releases](https://github.com/drsamonline/MyChrome/releases).
 
-2023年10月29日更新3.8.44：
+## Build
 
-1.修复Edge及chromium更新失败的问题;
+Requires Windows with PowerShell 7, or use the CI workflow
+(`Actions → build → Run workflow`).
 
-2.更新chrome++到1.6.1;
+```powershell
+git clone https://github.com/drsamonline/MyChrome
+cd MyChrome
+./build/build.ps1     # downloads the AutoIt3 SDK, checks syntax, compiles x64 + x86, packages
+./build/smoke.ps1     # checks every download source and starts both binaries
+```
 
-3.修复chrome++和mouseinc同时使用时右键关闭标签页失效的问题;
+Output lands in `dist/`: two `.7z` archives and `SHA256SUMS.txt`. Pushing a `v*` tag
+attaches them to a GitHub release.
 
-4.细节调整
+## Project layout
 
-2023年10月26日更新3.8.43：
+```
+src/MyBrowser.au3        application source (AutoIt3, single file — see ROADMAP H1)
+resources/               files embedded into the exe at compile time
+build/build.ps1          build and packaging
+build/smoke.ps1          source and binary smoke test
+docs/                    landing page (published to gh-pages) and ARCHITECTURE.md
+licenses/                licence texts for bundled third-party binaries
+update.txt               self-update manifest read by the app
+```
 
-1.新增chrome++及mouseinc，弃用GC和TabPlus（chrome++替代），减小软件体积。
+## Documentation
 
-2.修复Edge离线安装包解压失败及注入dll失败问题;
+| Document | What is in it |
+| --- | --- |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | how the resolve → download → extract → swap pipeline works |
+| [`ROADMAP.md`](ROADMAP.md) | 80-item enhancement list with priority, effort and risk |
+| [`SECURITY.md`](SECURITY.md) | how to report a vulnerability, scope, accepted risks |
+| [`PRIVACY.md`](PRIVACY.md) | exactly what is sent where, what the log holds, and how to check it |
+| [`TERMS.md`](TERMS.md) | licence in plain words, what a donation is and is not, warranty |
+| [`licenses/`](licenses/) | terms for the bundled 7-Zip, MozLz4 and other binaries |
 
-3.修复118版本chrome及Edge崩溃问题；
+## Known limits
 
-4.修复更新浏览器后卡顿问题；
+- **Edge, Vivaldi and Cent are not verified end to end.** Edge uses a Microsoft endpoint
+  that could not be reached from the build environment; Vivaldi and Cent have no binary
+  source in the code at all — those menu entries open a download page.
+- **GreenChrome / Chrome++ injection is untested on current Chrome.** It is off by
+  default and the launcher works without it.
+- **The executable is not Authenticode-signed** — the hook is in CI, it needs a
+  certificate secret to activate ([ROADMAP](ROADMAP.md) C1).
+- The UI has been compiled and structurally verified on Windows CI, but not exercised
+  by hand on a desktop.
 
-5.细节调整；
+## Contributing
 
+Bug reports are welcome — please include the version from the settings dialog, your
+Windows build, the browser and channel, and the exact error text. Security issues go
+through [`SECURITY.md`](SECURITY.md), not the public issue tracker.
+
+Before opening a pull request, run `./build/build.ps1` and `./build/smoke.ps1`; CI runs
+both.
+
+<!-- support:sweep -->
+## Support
+
+| | |
+|---|---|
+| UPI (India) | `drsohilboi@ybl` — payee Dr Sohil Momin, open amount |
+| GitHub Sponsors | [github.com/sponsors/drsamonline](https://github.com/sponsors/drsamonline) |
+| Ko-fi | [ko-fi.com/matneo](https://ko-fi.com/matneo) |
+| PayPal | [paypal.me/drsohilmomin](https://paypal.me/drsohilmomin?locale.x=en_GB&country.x=IN) |
+| My books | [Amazon author store](https://www.amazon.com/stores/author/B08ZT331LY/allbooks?ccs_id=aed72b9f-71d9-41dc-adee-e9368a317acc) |
+| More apps | [drsamonline.github.io](https://drsamonline.github.io/) |
+| Email | [sohilmomin2000@gmail.com](mailto:sohilmomin2000@gmail.com) |
+
+Nothing is gated behind it: no accounts, no telemetry, no tracking, no "pro" build.
+A donation buys no feature and no priority support — see [TERMS.md](TERMS.md).
+
+## Licence
+
+GPL-3.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). The complete corresponding
+source for every release is in this repository and attached to each release as
+`MyBrowser_v3.9.6_source.7z`.
+
+## Lineage
+
+This project stands on its own: the source, the build, the CI, the landing page and the
+release pipeline are all here, and nothing is fetched from another repository at build
+time. Where the code came from matters, so:
+
+| | |
+| --- | --- |
+| **Original code** | [cnjackchen/my-chrome](https://github.com/cnjackchen/my-chrome) — GPL-3.0, the AutoIt launcher this is derived from |
+| **Binary lineage** | [xixiranran/MyChrome](https://github.com/xixiranran/MyChrome) — published the 3.8.x line as MyBrowser; the source in `src/` was recovered from its 3.8.50 release, which shipped binaries only |
+| **This fork** | maintained here since 3.9.0: Chrome for Testing migration, repaired Firefox / Chromium / Brave / Vivaldi sources, security fixes, build and release automation |
+
+Because the upstream is GPL-3.0, this derivative stays GPL-3.0. The full attribution
+chain, including the bundled third-party binaries, is in [`NOTICE`](NOTICE).
+
+Chrome, Chromium, Edge, Brave, Firefox, Vivaldi and every other browser named above are
+downloaded from their vendors at runtime and are not redistributed here. No vendor logo
+or trademark is used to imply endorsement.
