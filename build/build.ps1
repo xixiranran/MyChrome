@@ -51,18 +51,19 @@ $au3 = Join-Path $src 'MyBrowser.au3'
 Write-Host 'Compiling x64 ...'
 $out64 = Join-Path $dist 'MyBrowser.exe'
 Remove-Item $out64 -Force -ErrorAction SilentlyContinue
-$log64 = & $aut2exe64 /in $au3 /out $out64 /x64 /comp 4 /console 2>&1 | Out-String
-Write-Host "exit=$LASTEXITCODE"
-Write-Host $log64
-if (-not (Test-Path $out64)) { throw "x64 compile produced no output. $log64" }
+# Aut2Exe is a GUI-subsystem binary: use Start-Process -Wait so we do not race it.
+$p64 = Start-Process -FilePath $aut2exe64 -ArgumentList @('/in', "`"$au3`"", '/out', "`"$out64`"", '/x64', '/comp', '4') -Wait -PassThru
+if ($p64.ExitCode -ne 0 -or -not (Test-Path $out64)) {
+    throw "x64 compile failed (exit $($p64.ExitCode))"
+}
 
 Write-Host 'Compiling x86 ...'
 $out86 = Join-Path $dist 'MyBrowser_x86.exe'
 Remove-Item $out86 -Force -ErrorAction SilentlyContinue
-$log86 = & $aut2exe /in $au3 /out $out86 /x86 /comp 4 /console 2>&1 | Out-String
-Write-Host "exit=$LASTEXITCODE"
-Write-Host $log86
-if (-not (Test-Path $out86)) { throw "x86 compile produced no output. $log86" }
+$p86 = Start-Process -FilePath $aut2exe -ArgumentList @('/in', "`"$au3`"", '/out', "`"$out86`"", '/x86', '/comp', '4') -Wait -PassThru
+if ($p86.ExitCode -ne 0 -or -not (Test-Path $out86)) {
+    throw "x86 compile failed (exit $($p86.ExitCode))"
+}
 
 # ---------------------------------------------------------------- package
 $sevenZip = Join-Path $res '7z.exe'
