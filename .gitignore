@@ -7,3 +7,4 @@ src/*.ini
 src/*.zip
 src/*.json
 *.7z
+SHA256SUMS.txt
