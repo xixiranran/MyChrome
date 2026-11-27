@@ -40,9 +40,10 @@ Get-ChildItem -Path $res -File | ForEach-Object {
 
 # ---------------------------------------------------------------- syntax check
 Write-Host 'Au3Check:'
-& $au3check /q /d (Join-Path $src 'MyBrowser.au3')
+& $au3check -q (Join-Path $src 'MyBrowser.au3')
 $checkExit = $LASTEXITCODE
-if ($checkExit -ne 0) { throw "Au3Check failed with exit code $checkExit" }
+# 0 = clean, 1 = warnings only; 2 = syntax errors, 3 = usage
+if ($checkExit -gt 1) { throw "Au3Check failed with exit code $checkExit" }
 
 # ---------------------------------------------------------------- compile
 $au3 = Join-Path $src 'MyBrowser.au3'

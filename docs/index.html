@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyBrowser — portable browser launcher for Windows</title>
+<meta name="description" content="Download Chrome, Chromium, Edge, Brave, Firefox, Vivaldi or Cent as a portable folder. No installer, no registry, no admin rights. Rebuilt from source for Chrome 158.">
+<meta name="theme-color" content="#f1eee6">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2316150f'/><circle cx='16' cy='16' r='8' fill='none' stroke='%23e04b12' stroke-width='3'/></svg>">
+<style>
+  :root{
+    --paper:#f1eee6;
+    --paper-2:#e8e4d9;
+    --ink:#16150f;
+    --ink-60:rgba(22,21,15,.62);
+    --ink-40:rgba(22,21,15,.40);
+    --rule:rgba(22,21,15,.16);
+    --rule-soft:rgba(22,21,15,.09);
+    --accent:#e04b12;
+    --green:#1c4a3c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --pad:clamp(20px,5vw,72px);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:17px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(to right,var(--rule-soft) 1px,transparent 1px),
+      linear-gradient(to bottom,var(--rule-soft) 1px,transparent 1px);
+    background-size:64px 64px;
+    background-position:-1px -1px;
+  }
+  ::selection{background:var(--accent);color:var(--paper)}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 var(--pad)}
+
+  /* ---------------------------------------------------------------- top bar */
+  .bar{
+    position:sticky;top:0;z-index:20;background:rgba(241,238,230,.86);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);
+  }
+  .bar-in{
+    max-width:1180px;margin:0 auto;padding:14px var(--pad);
+    display:flex;align-items:center;gap:20px;
+  }
+  .mark{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  .mark .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(224,75,18,.14)}
+  .bar nav{margin-left:auto;display:flex;align-items:center;gap:22px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  .bar nav a{text-decoration:none;color:var(--ink-60);border-bottom:1px solid transparent;padding-bottom:2px;transition:.18s}
+  .bar nav a:hover{color:var(--ink);border-color:var(--accent)}
+  #lang{
+    font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    background:transparent;border:1px solid var(--rule);border-radius:999px;
+    padding:6px 14px;cursor:pointer;color:var(--ink);transition:.18s;
+  }
+  #lang:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  @media(max-width:720px){.bar nav a:not(#lang){display:none}}
+
+  /* ---------------------------------------------------------------- hero */
+  .hero{position:relative;padding:clamp(44px,7vw,96px) 0 clamp(36px,5vw,64px);border-bottom:1px solid var(--rule)}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:end}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr;align-items:start}}
+
+  .kicker{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-60);display:flex;align-items:center;gap:12px;margin:0 0 26px;
+  }
+  .kicker::before{content:"";width:34px;height:1px;background:var(--accent);flex:none}
+
+  h1{
+    font-family:var(--serif);font-weight:400;margin:0;
+    font-size:clamp(42px,7.4vw,86px);line-height:.96;letter-spacing:-.022em;
+  }
+  h1 em{font-style:italic;color:var(--accent)}
+  h1 .rule{display:block;height:1px;background:var(--ink);opacity:.25;margin:18px 0}
+
+  .lede{margin:26px 0 0;max-width:46ch;font-size:clamp(16px,1.5vw,19px);color:var(--ink-60);line-height:1.6}
+  .lede b{color:var(--ink);font-weight:600}
+
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;text-decoration:none;
+    border:1px solid var(--ink);border-radius:2px;padding:15px 22px;
+    font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    transition:.18s;position:relative;overflow:hidden;
+  }
+  .btn .k{opacity:.55;font-size:11px;letter-spacing:.12em}
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+  .btn.ghost:hover .k{opacity:.7}
+
+  /* spec panel */
+  .spec{border-top:2px solid var(--ink);padding-top:14px}
+  .spec dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-family:var(--mono);font-size:12.5px}
+  .spec dt{color:var(--ink-40);letter-spacing:.1em;text-transform:uppercase}
+  .spec dd{margin:0;text-align:right;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+  .spec dd .live{color:var(--green)}
+  .spec .pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:7px;animation:p 2.4s infinite}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+  .spec .note{margin-top:16px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--ink-40);letter-spacing:.02em}
+
+  /* ---------------------------------------------------------------- sections */
+  section.block{padding:clamp(40px,6vw,80px) 0;border-bottom:1px solid var(--rule)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(26px,4vw,44px)}
+  .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.4vw,40px);line-height:1.1;margin:0;letter-spacing:-.015em}
+  .sec-head p{margin:0 0 0 auto;max-width:38ch;color:var(--ink-60);font-size:15px;line-height:1.55}
+  @media(max-width:760px){.sec-head{flex-wrap:wrap}.sec-head p{margin:0;flex-basis:100%}}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  .step{background:var(--paper);padding:24px 22px 26px;position:relative}
+  .step .n{font-family:var(--mono);font-size:11px;color:var(--ink-40);letter-spacing:.14em}
+  .step h3{font-family:var(--sans);font-size:15px;font-weight:600;margin:14px 0 8px;letter-spacing:-.005em}
+  .step p{margin:0;font-size:14px;color:var(--ink-60);line-height:1.55}
+  .step::after{content:"";position:absolute;left:22px;bottom:0;width:0;height:2px;background:var(--accent);transition:width .3s}
+  .step:hover::after{width:calc(100% - 44px)}
+  @media(max-width:900px){.steps{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+
+  /* browser chips */
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid var(--rule);border-radius:999px;padding:9px 16px;background:var(--paper);
+    transition:.18s;
+  }
+  .chip:hover{border-color:var(--ink);transform:translateY(-1px)}
+  .chip.hero-chip{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  /* changelog */
+  .log{border-top:1px solid var(--ink)}
+  .log-row{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:20px 0;border-bottom:1px solid var(--rule)}
+  .log-row .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+  .log-row .tag small{display:block;color:var(--ink-40);letter-spacing:.04em;text-transform:none;margin-top:4px;font-size:11px}
+  .log-row p{margin:0;font-size:15.5px;line-height:1.6}
+  .log-row p b{font-weight:600}
+  @media(max-width:640px){.log-row{grid-template-columns:1fr;gap:8px}}
+
+  /* download */
+  .dl{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ink);border:1px solid var(--ink)}
+  .dl a{
+    background:var(--paper);text-decoration:none;padding:clamp(24px,3.4vw,38px);
+    display:flex;flex-direction:column;gap:10px;transition:.2s;position:relative;
+  }
+  .dl a:hover{background:var(--ink);color:var(--paper)}
+  .dl a:hover .meta{color:rgba(241,238,230,.6)}
+  .dl .arch{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .dl .name{font-family:var(--serif);font-size:clamp(24px,3vw,32px);line-height:1.1}
+  .dl .meta{font-family:var(--mono);font-size:12px;color:var(--ink-60);letter-spacing:.04em;transition:.2s}
+  .dl a::after{content:"↓";position:absolute;top:clamp(20px,3vw,32px);right:clamp(20px,3vw,32px);font-size:20px;opacity:.35;transition:.2s}
+  .dl a:hover::after{opacity:1;transform:translateY(3px)}
+  @media(max-width:640px){.dl{grid-template-columns:1fr}}
+
+  .sub-dl{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--ink-60);letter-spacing:.03em}
+  .sub-dl a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:1px}
+  .sub-dl a:hover{color:var(--accent)}
+
+  /* build */
+  .code{
+    font-family:var(--mono);font-size:13px;line-height:1.85;background:var(--ink);color:#d9d5c7;
+    padding:22px 24px;border-radius:2px;overflow-x:auto;
+  }
+  .code .c{color:#7d7a6b}
+  .code .a{color:#ff8a5c}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,48px)}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+  .cols p{margin:0 0 14px;color:var(--ink-60);font-size:15.5px;line-height:1.6}
+  .cols p b{color:var(--ink)}
+
+  /* footer */
+  footer{padding:clamp(34px,4vw,52px) 0 60px}
+  .foot{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-40);text-transform:uppercase}
+  .foot a{color:var(--ink-60);text-decoration:none;border-bottom:1px solid var(--rule)}
+  .foot a:hover{color:var(--accent);border-color:var(--accent)}
+
+  [data-zh]{display:none}
+  html[lang="zh"] [data-en]{display:none}
+  html[lang="zh"] [data-zh]{display:inline}
+  html[lang="zh"] h1,html[lang="zh"] h2,html[lang="zh"] .dl .name{font-family:var(--sans);letter-spacing:0}
+  html[lang="zh"] h1{line-height:1.12}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="mark"><span class="dot"></span>MyBrowser</span>
+    <nav>
+      <a href="#how"><span data-en>How it works</span><span data-zh>工作原理</span></a>
+      <a href="#new"><span data-en>What's new</span><span data-zh>更新内容</span></a>
+      <a href="#download"><span data-en>Download</span><span data-zh>下载</span></a>
+      <button id="lang" type="button" aria-label="Switch language">中文</button>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker"><span data-en>Portable browser launcher · Windows 10 / 11</span><span data-zh>便携浏览器启动器 · Windows 10 / 11</span></p>
+        <h1>
+          <span data-en>Seven browsers.<br>One folder.<br><em>No installers.</em></span>
+          <span data-zh>七种浏览器。<br>一个文件夹。<br><em>无需安装。</em></span>
+        </h1>
+        <p class="lede">
+          <span data-en>Pick a browser, a channel and an architecture. MyBrowser pulls the official build, unpacks it beside the exe and runs it with its own profile. <b>Nothing touches the registry</b>, nothing needs admin rights, and you can delete the folder to uninstall.</span>
+          <span data-zh>选择浏览器、更新通道和架构。MyBrowser 会下载官方版本，解压到程序旁边，并使用独立配置运行。<b>不写入注册表</b>，无需管理员权限，删除文件夹即可卸载。</span>
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0_x64.7z">
+            <span><span data-en>Download</span><span data-zh>下载</span> x64</span><span class="k">3.9.0 · .7z</span>
+          </a>
+          <a class="btn ghost" href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0.7z">
+            <span>x86</span><span class="k">32-bit</span>
+          </a>
+        </div>
+      </div>
+
+      <aside class="spec">
+        <dl>
+          <dt>Version</dt><dd>3.9.0</dd>
+          <dt>Chrome</dt><dd><span class="pulse"></span><span class="live" id="cft">158.0.8127.88</span></dd>
+          <dt>Channels</dt><dd>Stable · Beta · Dev · Canary</dd>
+          <dt>Package</dt><dd>~3.5 MB</dd>
+          <dt>Runtime</dt><dd>None required</dd>
+          <dt>Signature</dt><dd>Unsigned</dd>
+        </dl>
+        <p class="note">
+          <span data-en>Chrome line is read live from Google's Chrome for Testing feed.</span>
+          <span data-zh>Chrome 版本实时读取自 Google Chrome for Testing 数据源。</span>
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2><span data-en>What it actually does</span><span data-zh>它到底做了什么</span></h2>
+      <p><span data-en>Four steps, then it gets out of the way.</span><span data-zh>四个步骤，然后退到后台。</span></p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">STEP 01</span>
+        <h3><span data-en>Ask the feed</span><span data-zh>查询数据源</span></h3>
+        <p><span data-en>Resolves the current build for your channel from Chrome for Testing, or the vendor's own update service.</span><span data-zh>从 Chrome for Testing 或厂商更新服务查询当前通道的最新版本。</span></p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 02</span>
+        <h3><span data-en>Fetch it</span><span data-zh>下载</span></h3>
+        <p><span data-en>Segmented download with resume. A direct ZIP instead of the 536 MB installer Google now serves.</span><span data-zh>分段下载并支持续传。直接获取 ZIP，而不是 Google 现在提供的 536 MB 安装包。</span></p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 03</span>
+        <h3><span data-en>Unpack beside it</span><span data-zh>就地解压</span></h3>
+        <p><span data-en>Extracts into <code>App\</code> next to the exe. Swap or delete the folder any time.</span><span data-zh>解压到程序旁的 <code>App\</code> 目录。可随时替换或删除。</span></p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 04</span>
+        <h3><span data-en>Launch clean</span><span data-zh>干净启动</span></h3>
+        <p><span data-en>Starts with its own profile directory. Optional GreenChrome / Chrome++ injection, off by default.</span><span data-zh>使用独立配置目录启动。可选 GreenChrome / Chrome++ 注入，默认关闭。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="browsers">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2><span data-en>Browsers it can fetch</span><span data-zh>支持的浏览器</span></h2>
+      <p><span data-en>Anything Chromium-shaped, plus Firefox.</span><span data-zh>所有 Chromium 系浏览器，以及 Firefox。</span></p>
+    </div>
+    <div class="chips">
+      <span class="chip hero-chip">Chrome</span>
+      <span class="chip">Chromium</span>
+      <span class="chip">Edge</span>
+      <span class="chip">Brave</span>
+      <span class="chip">Firefox</span>
+      <span class="chip">Vivaldi</span>
+      <span class="chip">Cent</span>
+    </div>
+  </section>
+
+  <section class="block" id="new">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2><span data-en>What changed in 3.9.0</span><span data-zh>3.9.0 更新内容</span></h2>
+      <p><span data-en>This is the release that fixes current Chrome.</span><span data-zh>本次更新修复了新版 Chrome 的兼容问题。</span></p>
+    </div>
+    <div class="log">
+      <div class="log-row">
+        <span class="tag">Source<small>Chrome 158+</small></span>
+        <p><span data-en>Chrome is resolved through the official <b>Chrome for Testing</b> feed. The old Omaha installer path is kept as a fallback.</span><span data-zh>Chrome 改为通过官方 <b>Chrome for Testing</b> 数据源获取，旧的 Omaha 安装包方式保留为备用。</span></p>
+      </div>
+      <div class="log-row">
+        <span class="tag">Install<small>~170 MB</small></span>
+        <p><span data-en>Direct ZIP extraction into the browser folder. No nested archive, no version-directory guessing — the step that kept failing.</span><span data-zh>直接解压 ZIP 到浏览器目录。无需处理嵌套压缩包和版本目录，之前失败的正是在这一步。</span></p>
+      </div>
+      <div class="log-row">
+        <span class="tag">Source code<small>First time</small></span>
+        <p><span data-en>The complete AutoIt source ships in the repo. Upstream only ever published binaries.</span><span data-zh>完整 AutoIt 源码随仓库发布。上游此前只提供编译好的程序。</span></p>
+      </div>
+      <div class="log-row">
+        <span class="tag">Build<small>CI</small></span>
+        <p><span data-en>Both architectures compile on every push through GitHub Actions, so a broken build cannot be released.</span><span data-zh>每次推送都会通过 GitHub Actions 编译两种架构，避免发布无法构建的版本。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="download">
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2><span data-en>Download</span><span data-zh>下载</span></h2>
+      <p><span data-en>Unzip, run the exe, pick a browser. That is the whole setup.</span><span data-zh>解压、运行、选择浏览器，安装就这些。</span></p>
+    </div>
+    <div class="dl">
+      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0_x64.7z">
+        <span class="arch">x64 · Recommended</span>
+        <span class="name">MyBrowser 3.9.0</span>
+        <span class="meta">MyBrowser_v3.9.0_x64.7z · Windows 10/11 64-bit</span>
+      </a>
+      <a href="https://github.com/drsamonline/MyChrome/releases/download/v3.9.0/MyBrowser_v3.9.0.7z">
+        <span class="arch">x86 · Legacy</span>
+        <span class="name">MyBrowser 3.9.0</span>
+        <span class="meta">MyBrowser_v3.9.0.7z · 32-bit systems</span>
+      </a>
+    </div>
+    <div class="sub-dl">
+      <a href="https://github.com/drsamonline/MyChrome/releases"><span data-en>All releases and checksums</span><span data-zh>全部版本与校验值</span></a>
+      <a href="https://github.com/drsamonline/MyChrome"><span data-en>Source on GitHub</span><span data-zh>GitHub 源码</span></a>
+      <span><span data-en>Windows may warn about unsigned files.</span><span data-zh>Windows 可能提示未签名的文件。</span></span>
+    </div>
+  </section>
+
+  <section class="block" id="build">
+    <div class="sec-head">
+      <span class="num">05</span>
+      <h2><span data-en>Build it yourself</span><span data-zh>自行编译</span></h2>
+    </div>
+    <div class="cols">
+      <div>
+        <p><span data-en>One script downloads the AutoIt3 SDK, syntax-checks the source, compiles both architectures and packages the release archives.</span><span data-zh>一个脚本即可下载 AutoIt3 SDK、检查语法、编译两种架构并打包发布文件。</span></p>
+        <p><span data-en>Change anything in <b>src/MyBrowser.au3</b> and the same pipeline rebuilds it.</span><span data-zh>修改 <b>src/MyBrowser.au3</b> 后，同一流程即可重新编译。</span></p>
+      </div>
+      <pre class="code"><span class="c"># Windows, PowerShell 7</span>
+git clone https://github.com/drsamonline/MyChrome
+cd MyChrome
+<span class="a">./build/build.ps1</span>
+
+<span class="c"># output</span>
+dist/MyBrowser_v3.9.0_x64.7z
+dist/MyBrowser_v3.9.0.7z</pre>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>MyBrowser 3.9.0 · MIT-spirit fork of MyChrome</span>
+    <span>
+      <a href="https://github.com/xixiranran/MyChrome"><span data-en>Original project</span><span data-zh>原始项目</span></a> ·
+      <a href="https://github.com/drsamonline/MyChrome"><span data-en>This fork</span><span data-zh>本仓库</span></a>
+    </span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.getElementById('lang');
+  var root = document.documentElement;
+  btn.addEventListener('click', function(){
+    var zh = root.getAttribute('lang') === 'zh';
+    root.setAttribute('lang', zh ? 'en' : 'zh');
+    btn.textContent = zh ? '中文' : 'EN';
+  });
+
+  // Live Chrome stable version from the Chrome for Testing feed.
+  fetch('https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json')
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+    .then(function(d){
+      var v = d && d.channels && d.channels.Stable && d.channels.Stable.version;
+      if (v) { document.getElementById('cft').textContent = v; }
+    })
+    .catch(function(){ /* keep the baked-in version */ });
+})();
+</script>
+</body>
+</html>
