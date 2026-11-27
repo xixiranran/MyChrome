@@ -49,7 +49,8 @@ Write-Host 'Au3Check:'
 & $au3check -q (Join-Path $src 'MyBrowser.au3')
 $checkExit = $LASTEXITCODE
 # 0 = clean, 1 = warnings only; 2 = syntax errors, 3 = usage
-if ($checkExit -gt 1) { throw "Au3Check failed with exit code $checkExit" }
+# 0 = clean, 1 = warnings, 2 = syntax errors, 3 = usage. Warnings are errors here.
+if ($checkExit -ne 0) { throw "Au3Check failed with exit code $checkExit" }
 
 # ---------------------------------------------------------------- compile
 $au3 = Join-Path $src 'MyBrowser.au3'
@@ -69,6 +70,25 @@ Remove-Item $out86 -Force -ErrorAction SilentlyContinue
 $p86 = Start-Process -FilePath $aut2exe -ArgumentList @('/in', "`"$au3`"", '/out', "`"$out86`"", '/x86', '/comp', '4') -Wait -PassThru
 if ($p86.ExitCode -ne 0 -or -not (Test-Path $out86)) {
     throw "x86 compile failed (exit $($p86.ExitCode))"
+}
+
+# ---------------------------------------------------------------- signing (optional)
+# Set SIGNING_PFX (base64 .pfx) and SIGNING_PFX_PASSWORD as repository secrets to ship
+# signed binaries. Without them the build is unsigned, as before.
+if ($env:SIGNING_PFX) {
+    $pfx = Join-Path $tool 'sign.pfx'
+    [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:SIGNING_PFX))
+    $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Filter 'signtool.exe' -Recurse -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -like '*x64*' } | Select-Object -Last 1
+    if (-not $signtool) { throw 'signtool.exe not found; cannot sign' }
+    foreach ($f in @($out64, $out86)) {
+        & $signtool.FullName sign /fd SHA256 /f $pfx /p $env:SIGNING_PFX_PASSWORD /tr 'http://timestamp.digicert.com' /td SHA256 $f
+        if ($LASTEXITCODE -ne 0) { throw "signing failed for $f" }
+    }
+    Remove-Item $pfx -Force
+    Write-Host 'Signed both executables.'
+} else {
+    Write-Host 'No SIGNING_PFX secret configured; shipping unsigned binaries.'
 }
 
 # ---------------------------------------------------------------- package

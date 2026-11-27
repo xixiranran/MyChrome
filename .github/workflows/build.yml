@@ -17,6 +17,9 @@ jobs:
 
       - name: Build with AutoIt3
         shell: pwsh
+        env:
+          SIGNING_PFX: ${{ secrets.SIGNING_PFX }}
+          SIGNING_PFX_PASSWORD: ${{ secrets.SIGNING_PFX_PASSWORD }}
         run: ./build/build.ps1
 
       - name: Smoke test sources and binaries

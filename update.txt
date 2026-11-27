@@ -1,6 +1,6 @@
-latest=3.9.3
-url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.3/MyBrowser_v3.9.3.7z
-url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.3/MyBrowser_v3.9.3_x64.7z
-update=1. 移除内置的 Google API 密钥；\n2. 默认不再关闭沙箱；\n3. 解压前校验更新包；\n4. 修复路径含空格或 & 时的命令注入；\n5. 3.9.3
-update_zh-TW=1. 移除內建的 Google API 金鑰；\n2. 預設不再關閉沙箱；\n3. 解壓前校驗更新檔；\n4. 修正路徑含空格或 & 時的指令注入；\n5. 3.9.3
-update_en-US=1. Removed the bundled Google API credentials;\n2. --no-sandbox is no longer a default;\n3. Archives are verified before extraction;\n4. Fixed command injection with folders containing spaces or &;\n5. 3.9.3
+latest=3.9.4
+url=https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4.7z
+url_x64=https://github.com/drsamonline/MyChrome/releases/download/v3.9.4/MyBrowser_v3.9.4_x64.7z
+update=1. 「否」只跳過當前版本，不再永久關閉更新檢查；\n2. 新增更新記錄 MyBrowser.log 便於排查；\n3. 解壓後比對版本號；\n4. 3.9.4
+update_zh-TW=1. 「否」只跳過目前版本，不再永久關閉更新檢查；\n2. 新增更新記錄 MyBrowser.log 便於排查；\n3. 解壓後比對版本號；\n4. 3.9.4
+update_en-US=1. "No" now skips one release instead of turning update checks off forever;\n2. Added MyBrowser.log for support;\n3. The unpacked build version is compared with the requested one;\n4. 3.9.4

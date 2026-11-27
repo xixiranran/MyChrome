@@ -1558,7 +1558,7 @@ Func _STRINGENDSWITH ( $SINPUT , $SSEARCH , $FCASESENSITIVE = False )
 	Return False
 EndFunc
 Global $WINVERSION = _WINAPI_GETVERSION ( )
-Global Const $APPVERSION = "3.9.3"
+Global Const $APPVERSION = "3.9.4"
 Global $APPNAME = StringRegExpReplace ( @ScriptName , "\.[^.]*$" , "" )
 Global $INIFILE = @ScriptDir & "\" & $APPNAME & ".ini"
 Global $LANGUAGE = IniRead ( $INIFILE , "Settings" , "Language" , "Auto" )
@@ -4893,7 +4893,7 @@ Func UPDATECHROME ( $CHROMEPATH , $CHANNEL , $STRURL = "" )
 			EndIf
 			If Not $LATESTCHROMEVER Then
 				If Not IsHWnd ( $HSETTINGS ) Then ExitLoop
-				$MSG = MsgBox ( 16 + 5 , "MyBrowser" , LANG ( "GUI" , "GetUpdateInfoFailed" , "获取更新信息失败" ) & "！" & @CRLF & $ERROR , 0 , $HSETTINGS )
+				$MSG = MsgBox ( 16 + 5 , "MyBrowser" , LANG ( "GUI" , "GetUpdateInfoFailed" , "获取更新信息失败" ) & "！" & @CRLF & $ERROR & @CRLF & @CRLF & LANG ( "GUI" , "LastKnownVersion" , "上次已知版本" ) & ": " & IniRead ( $INIFILE , "Settings" , "LastKnownVersion" , "-" ) , 0 , $HSETTINGS )
 			EndIf
 		Until $LATESTCHROMEVER Or $MSG = 2
 		If $LATESTCHROMEVER And IsHWnd ( $HSETTINGS ) Then
@@ -4906,6 +4906,8 @@ Func UPDATECHROME ( $CHROMEPATH , $CHANNEL , $STRURL = "" )
 	EndIf
 	$LASTCHECKUPDATE = _NOWCALC ( )
 	IniWrite ( $INIFILE , "Settings" , "LastCheckUpdate" , $LASTCHECKUPDATE )
+	IniWrite ( $INIFILE , "Settings" , "LastKnownVersion" , $LATESTCHROMEVER )
+	_LOG ( "update check: " & $BROWSERTYPE & " / " & $CHANNEL & " latest=" & $LATESTCHROMEVER & " installed=" & $CHROMEFILEVERSION )
 	$CHROMEFILEVERSION = FileGetVersion ( $CHROMEDIR & "\chrome.dll" , "FileVersion" )
 	$EDGEFILEVERSION = FileGetVersion ( $CHROMEDIR & "\msedge.dll" , "FileVersion" )
 	If StringInStr ( IniRead ( $INIFILE , "Settings" , "BrowserType" , "" ) , "Edge" ) Then
@@ -4923,6 +4925,12 @@ Func UPDATECHROME ( $CHROMEPATH , $CHANNEL , $STRURL = "" )
 			EndIf
 		EndIf
 	EndIf
+	If Not IsHWnd ( $HSETTINGS ) Then
+		If $LATESTCHROMEVER = IniRead ( $INIFILE , "Settings" , "SkippedVersion" , "" ) Then
+			ENDUPDATE ( )
+			Return
+		EndIf
+	EndIf
 	Local $LANGUPDATETIPS = LANG ( "Update" , "UpdateTips" , "浏览器可以更新，是否立即下载？\n\n最新版本：\t%s\n您的版本：\t%s  %s\n\n【是】:立即更新  【否】:不更新(下次不提示)  【取消】:不更新(下次会提示)" )
 	If StringInStr ( IniRead ( $INIFILE , "Settings" , "BrowserType" , "" ) , "Edge" ) Then
 		Local $INFO = StringFormat ( $LANGUPDATETIPS , $LATESTCHROMEVER , $EDGEFILEVERSION )
@@ -4934,8 +4942,11 @@ Func UPDATECHROME ( $CHROMEPATH , $CHANNEL , $STRURL = "" )
 		$MSG = MsgBox ( 64 + 3 , "MyBrowser" , $INFO )
 	EndIf
 	If $MSG = 7 Then
+		; Skip this release only. It used to write UpdateInterval=-1, which turned
+		; update checks off permanently - one declined prompt, no more updates ever.
+		IniWrite ( $INIFILE , "Settings" , "SkippedVersion" , $LATESTCHROMEVER )
+		_LOG ( "user skipped " & $LATESTCHROMEVER )
 		ENDUPDATE ( )
-		IniWrite ( $INIFILE , "Settings" , "UpdateInterval" , - 1 )
 		Return
 	EndIf
 	If $MSG = 2 Then
@@ -5090,6 +5101,18 @@ Func CANCELUPDATE ( )
 	If $MSG = 6 Then
 		$ISUPDATING = 0
 	EndIf
+EndFunc
+Func _LOG ( $SMSG )
+	; Append-only support log next to the exe. Never let logging break an update.
+	Local $SLOGFILE = @ScriptDir & "\MyBrowser.log"
+	If FileExists ( $SLOGFILE ) Then
+		If FileGetSize ( $SLOGFILE ) > 262144 Then FileDelete ( $SLOGFILE )
+	EndIf
+	Local $H = FileOpen ( $SLOGFILE , 1 )
+	If $H = - 1 Then Return 0
+	FileWriteLine ( $H , @YEAR & "-" & @MON & "-" & @MDAY & " " & @HOUR & ":" & @MIN & ":" & @SEC & "  " & $SMSG )
+	FileClose ( $H )
+	Return 1
 EndFunc
 Func _ZIPBROWSERDIR ( $SDIR , $SEXE )
 	; Returns the single subfolder of $SDIR that holds $SEXE, or "" if there is none.
@@ -5946,6 +5969,7 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 		$IPACKETOK = 0
 	EndIf
 	If Not $IPACKETOK Then
+		_LOG ( "archive failed integrity test: " & $CHROMEINSTALLER )
 		MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ArchiveCorrupt" , "下载的更新包不完整或已损坏，请重试。" ) , 0 , $HSETTINGS )
 		If FileExists ( $CHROMEINSTALLER ) Then FileDelete ( $CHROMEINSTALLER )
 		DirRemove ( $TEMPDIR , 1 )
@@ -6310,6 +6334,16 @@ Func INSTALLCHROME ( $CHROMEINSTALLER = "" )
 	$ISFIREFOX = 0
 	$ISCENT = 0
 	$ISCENTPRO = 0
+	; A3: the vendor feed can serve a stale or wrong package. Compare and log,
+	; but do not block - a mismatch is worth knowing about, not worth bricking on.
+	If FileExists ( $CHROMEDIR & "\~updated\" & $CHROMEEXE ) Then
+		Local $SUNPACKED = FileGetVersion ( $CHROMEDIR & "\~updated\" & $CHROMEEXE )
+		If $SUNPACKED <> "" And $LATESTCHROMEVER <> "" And $SUNPACKED <> $LATESTCHROMEVER Then
+			_LOG ( "version mismatch: requested " & $LATESTCHROMEVER & ", unpacked " & $SUNPACKED )
+		Else
+			_LOG ( "unpacked " & $SUNPACKED & " ok" )
+		EndIf
+	EndIf
 	$LANGUPDATECLOSECHROME = LANG ( "Update" , "UpdateCloseChrome" , "是否关闭 Chrome 浏览器以完成更新？\n点击“是”强制关闭浏览器，点击“否”推迟到下次启动时应用更新。" )
 	$CHROMEISRUNNING = CHROMEISRUNNING ( $CHROMEPATH , StringFormat ( $LANGUPDATECLOSECHROME , 0 ) )
 	If $CHROMEISRUNNING Then Return
@@ -6322,6 +6356,7 @@ Func APPLYUPDATE ( )
 		$SAPPLYOK = FileExists ( $CHROMEDIR & "\~updated\" & $CHROMEEXE )
 	EndIf
 	If Not $SAPPLYOK Then
+		_LOG ( "apply refused: incomplete tree for " & $CHROMEEXE )
 		MsgBox ( 64 , "MyBrowser" , LANG ( "Update" , "ApplyIncomplete" , "更新文件不完整，已取消本次更新，原浏览器未受影响。" ) , 0 , $HSETTINGS )
 		If FileExists ( $CHROMEDIR & "\~updated" ) Then DirRemove ( $CHROMEDIR & "\~updated" , 1 )
 		If FileExists ( $CHROMEDIR & "\~update" ) Then DirRemove ( $CHROMEDIR & "\~update" , 1 )

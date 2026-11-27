@@ -28,6 +28,12 @@ How to read the columns:
 | H2 — build fails if the version drifts (partial) | 3.9.3 |
 | H3 — `docs/ARCHITECTURE.md` | 3.9.3 |
 | I1 — smoke test in CI (partial: sources + launch) | 3.9.3 |
+| A3 — unpacked version compared with the requested one | 3.9.4 |
+| A4 — last known version kept for feed outages | 3.9.4 |
+| B4 — "No" skips one release, not all future checks | 3.9.4 |
+| B9 — update log for support (`MyBrowser.log`) | 3.9.4 |
+| C1 — signing wired in CI, activates with a certificate secret (partial) | 3.9.4 |
+| H4 — CI fails on Au3Check warnings | 3.9.4 |
 | K1 — GPL-3.0 `LICENSE` and `NOTICE` | 3.9.1 |
 | K2 — `licenses/` with third-party terms | 3.9.3 |
 

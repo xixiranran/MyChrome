@@ -1,6 +1,6 @@
 # Privacy
 
-MyBrowser 3.9.3 · effective 27 November 2026
+MyBrowser 3.9.4 · effective 27 November 2026
 
 MyBrowser is a portable launcher. It has no account system, no telemetry, no analytics
 and no crash reporting. Nothing about you is sent anywhere by this program.
@@ -14,8 +14,9 @@ This document describes exactly what the code does, and how to check it.
 | Settings | `MyBrowser.ini` next to the executable | browser choice, channel, paths, window options |
 | Browser profile | the profile folder you choose (default: inside the app folder) | history, cookies, passwords — managed by the browser itself, not by this program |
 | Downloaded update package | `App\~update\` during an update | extracted, then deleted when the update finishes or fails (3.9.2 and later) |
+| Update log | `MyBrowser.log` next to the executable | browser, channel, version numbers and file names for each update step, so a bug report can be diagnosed. No browsing data, no personal data. Delete it any time; it is recreated on the next update check |
 
-There is no database, no cache of personal data, and no log file.
+There is no database and no cache of personal data. The update log described above is the only file the program writes that is not a setting.
 
 To erase everything, delete the folder. Nothing is left behind outside it, except what
 you explicitly point the browser's profile path at.

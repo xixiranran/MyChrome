@@ -30,9 +30,9 @@ delete the folder to uninstall.
 
 | Build | File | Notes |
 | --- | --- | --- |
-| **x64** (recommended) | [`MyBrowser_v3.9.3_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
-| x86 | [`MyBrowser_v3.9.3.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
-| Source | `MyBrowser_v3.9.3_source.7z` | source, resources, build scripts |
+| **x64** (recommended) | [`MyBrowser_v3.9.4_x64.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3_x64.7z) | Windows 10 / 11, 64-bit |
+| x86 | [`MyBrowser_v3.9.4.7z`](https://github.com/drsamonline/MyChrome/releases/latest/download/MyBrowser_v3.9.3.7z) | 32-bit systems |
+| Source | `MyBrowser_v3.9.4_source.7z` | source, resources, build scripts |
 
 Unzip, run `MyBrowser.exe`, pick a browser and channel. Each release publishes
 `SHA256SUMS.txt`; verify with `certutil -hashfile <file> SHA256`.
@@ -71,19 +71,26 @@ configuration was tested; see [Known limits](#known-limits).
 - ~1.5 GB free disk space per browser while updating
 - No runtime, no .NET, no Visual C++ redistributable — the executable is self-contained
 
-## What's new in 3.9.3
+## What's new in 3.9.4
 
-- **Hardcoded Google API credentials removed.** The upstream build shipped a Google API
-  key, OAuth client id and client secret as literals and wrote them into your environment
-  with `setx`. This fork does not redistribute them.
-- **`--no-sandbox` is no longer a default.** It disabled the renderer sandbox on every
-  launch. Add it back in Settings → Params only if you must, and know what it costs.
-- **Archive integrity is checked before extraction**, so a truncated download reports
-  itself instead of failing inside the unpack step.
-- **Command quoting fixed.** Folder paths with spaces or `&` no longer break the DLL
-  injection step or inject a second command into `cmd.exe`.
-- **DPI awareness** — the UI is no longer blurry at 125% scaling.
-- **`SHA256SUMS.txt`** published with every release.
+- **"No" no longer disables updates forever.** Declining a prompt used to write
+  `UpdateInterval=-1`, so one "no" meant no update checks ever again. It now records
+  just the version you skipped, and the next release prompts normally.
+- **`MyBrowser.log`.** A small, append-only log of each update step — browser, channel,
+  requested and unpacked version, failures. It is what makes a bug report actionable.
+  Delete it any time.
+- **Version assertion.** The unpacked build is compared against the version that was
+  requested; a mismatch is logged instead of silently installing something else.
+- **Last known version** is remembered, so a total feed outage now says
+  "last known: 158.0.8127.88" instead of only "failed".
+- **Signing is wired into CI.** Add `SIGNING_PFX` and `SIGNING_PFX_PASSWORD` secrets and
+  every release is Authenticode-signed; without them the build ships unsigned, as now.
+- **CI fails on Au3Check warnings**, not just errors.
+
+Earlier releases: **3.9.3** removed hardcoded Google API credentials, dropped
+`--no-sandbox` from the defaults, fixed command injection in the injection path, added
+the archive integrity test and `SHA256SUMS.txt`. **3.9.1/3.9.2** repaired the Firefox,
+Chromium and Brave download paths and hardened the update engine.
 
 Full history: [releases](https://github.com/drsamonline/MyChrome/releases).
 
@@ -121,7 +128,7 @@ update.txt               self-update manifest read by the app
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | how the resolve → download → extract → swap pipeline works |
 | [`ROADMAP.md`](ROADMAP.md) | 80-item enhancement list with priority, effort and risk |
 | [`SECURITY.md`](SECURITY.md) | how to report a vulnerability, scope, accepted risks |
-| [`PRIVACY.md`](PRIVACY.md) | exactly what is sent where — and how to check it |
+| [`PRIVACY.md`](PRIVACY.md) | exactly what is sent where, what the log holds, and how to check it |
 | [`licenses/`](licenses/) | terms for the bundled 7-Zip, MozLz4 and other binaries |
 
 ## Known limits
@@ -131,7 +138,8 @@ update.txt               self-update manifest read by the app
   source in the code at all — those menu entries open a download page.
 - **GreenChrome / Chrome++ injection is untested on current Chrome.** It is off by
   default and the launcher works without it.
-- **The executable is not Authenticode-signed** yet ([ROADMAP](ROADMAP.md) C1).
+- **The executable is not Authenticode-signed** — the hook is in CI, it needs a
+  certificate secret to activate ([ROADMAP](ROADMAP.md) C1).
 - The UI has been compiled and structurally verified on Windows CI, but not exercised
   by hand on a desktop.
 
