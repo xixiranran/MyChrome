@@ -106,7 +106,7 @@
   .spec .note{margin-top:16px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--ink-40);letter-spacing:.02em}
 
   /* ---------------------------------------------------------------- sections */
-  section.block{padding:clamp(40px,6vw,80px) 0;border-bottom:1px solid var(--rule)}
+  section.block{padding:clamp(34px,5vw,64px) 0;border-bottom:1px solid var(--rule)}
   .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(26px,4vw,44px)}
   .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
   h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.4vw,40px);line-height:1.1;margin:0;letter-spacing:-.015em}
@@ -139,7 +139,7 @@
   .log-row{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:20px 0;border-bottom:1px solid var(--rule)}
   .log-row .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
   .log-row .tag small{display:block;color:var(--ink-40);letter-spacing:.04em;text-transform:none;margin-top:4px;font-size:11px}
-  .log-row p{margin:0;font-size:15.5px;line-height:1.6}
+  .log-row p{margin:0;font-size:15.5px;line-height:1.6;max-width:62ch}
   .log-row p b{font-weight:600}
   @media(max-width:640px){.log-row{grid-template-columns:1fr;gap:8px}}
 
@@ -176,7 +176,7 @@
 
   /* footer */
   footer{padding:clamp(34px,4vw,52px) 0 60px}
-  .foot{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-40);text-transform:uppercase}
+  .foot{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-60);text-transform:uppercase}
   .foot a{color:var(--ink-60);text-decoration:none;border-bottom:1px solid var(--rule)}
   .foot a:hover{color:var(--accent);border-color:var(--accent)}
 
@@ -366,7 +366,7 @@ dist/MyBrowser_v3.9.0.7z</pre>
 
 <footer class="wrap">
   <div class="foot">
-    <span>MyBrowser 3.9.0 · MIT-spirit fork of MyChrome</span>
+    <span>MyBrowser 3.9.0 · Fork of MyChrome</span>
     <span>
       <a href="https://github.com/xixiranran/MyChrome"><span data-en>Original project</span><span data-zh>原始项目</span></a> ·
       <a href="https://github.com/drsamonline/MyChrome"><span data-en>This fork</span><span data-zh>本仓库</span></a>
