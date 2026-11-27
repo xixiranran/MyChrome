@@ -141,6 +141,7 @@ update.txt               self-update manifest read by the app
 | [`ROADMAP.md`](ROADMAP.md) | 80-item enhancement list with priority, effort and risk |
 | [`SECURITY.md`](SECURITY.md) | how to report a vulnerability, scope, accepted risks |
 | [`PRIVACY.md`](PRIVACY.md) | exactly what is sent where, what the log holds, and how to check it |
+| [`TERMS.md`](TERMS.md) | licence in plain words, what a donation is and is not, warranty |
 | [`licenses/`](licenses/) | terms for the bundled 7-Zip, MozLz4 and other binaries |
 
 ## Known limits
@@ -178,6 +179,7 @@ both.
 | Email | [sohilmomin2000@gmail.com](mailto:sohilmomin2000@gmail.com) |
 
 Nothing is gated behind it: no accounts, no telemetry, no tracking, no "pro" build.
+A donation buys no feature and no priority support — see [TERMS.md](TERMS.md).
 
 ## Licence
 
